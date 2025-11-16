@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 3.26)
 
 project (oop1_ex02)
-set (MY_AUTHORS "ADD-YOUR-NAMES-HERE")
+set (MY_AUTHORS "Tomer_Shovav-Gal_Amar")
 
 include (cmake/CompilerSettings.cmake)
 
