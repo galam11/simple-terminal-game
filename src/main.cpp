@@ -1,30 +1,11 @@
 ﻿#include <iostream>
-#include <Level.h>
-#include <Location.h>
+#include <Board.h>
+#include "Controller.h"
 
 
 int main()
 {
-	Level level;
-
-	level.loadNext();
-
-	std::cout 
-		<< level.getCurrentLevel() << " "
-		<< level.getLevelHight() << " "
-		<< level.getLevelWidth() << " "
-		<< std::endl;
-
-	level.drawLevel();
-
-	level.loadNext();
-	std::cout 
-		<< level.getCurrentLevel() << " "
-		<< level.getLevelHight() << " "
-		<< level.getLevelWidth() << " "
-		<< std::endl;
-
-	level.drawLevel();
-
+	Controller conntroller;
+	conntroller.run();
 	return 0;
 }

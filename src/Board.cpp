@@ -1,48 +1,49 @@
-#include <Level.h>
+#include <Board.h>
 #include <Location.h>
 #include <iostream>
 
 
-
-
-Level::Level()
+Board::Board()
 {
 	m_inputStreem.open(FILE_PATH);
 }
 
-Level::~Level()
+Board::~Board()
 {
 	m_inputStreem.close();
 }
 
-void Level::loadNext()
+bool Board::loadNext()
 {
-	m_levelIndex++;
+	m_level++;
 
 	std::string buffer;
 	std::getline(m_inputStreem, buffer);
+
+	if (buffer.empty())
+		return false;
+
 	m_levelHight = std::stoi(buffer);
 
-	m_levelData.clear();
+	m_BoardData.clear();
 
 	for (int i = 0; i < m_levelHight; i++) 
 	{
 		std::getline(m_inputStreem, buffer);
-		m_levelData.push_back(buffer);
+		m_BoardData.push_back(buffer);
 	}
-	m_levelWidth = m_levelData[0].length();
+	m_width = m_BoardData[0].length();
+	saveEntitisState();
 
-	
-	
-
+	return true;
 }
 
-void Level::saveEntitisState()
+void Board::saveEntitisState()
 {
 	for (int i = 0; i < m_levelHight; i++)
-		for (int j = 0; j < m_levelWidth; j++)
+		for (int j = 0; j < m_width; j++)
 		{
-			char& charAt = m_levelData[i][j];
+			char& charAt = m_BoardData[i][j];
 			switch (charAt) {
 			case ENEMY:
 				charAt = EMPTY;
@@ -60,28 +61,28 @@ void Level::saveEntitisState()
 
 
 
-void Level::drawLevel() const
+void Board::drawLevel() const
 {
 	for (int i = 0; i < m_levelHight; i++)
-		std::cout << m_levelData[i] << '\n';
+		std::cout << m_BoardData[i] << '\n';
 }
 
-char Level::getAt(const Location& location) const
+char Board::getAt(const Location& location) const
 {
-	return m_levelData[location.col][location.row];
+	return m_BoardData[location.col][location.row];
 }
 
-int Level::getLevelWidth() const
+int Board::getWidth() const
 {
-	return m_levelWidth;
+	return m_width;
 }
 
-int Level::getLevelHight() const
+int Board::getHight() const
 {
 	return m_levelHight;
 }
 
-int Level::getCurrentLevel() const
+int Board::getLevel() const
 {
-	return m_levelIndex;
+	return m_level;
 }
