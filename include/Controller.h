@@ -1,18 +1,23 @@
 #pragma once
 #include "Board.h"
 #include "Location.h"
+#include <vector>
+
 class Controller
 {
 private:
 	Board m_board;
-	bool m_running = false;
-	// todo player
+	bool m_running = true;
 
+	// todo player
+	//Player m_player
+	// 
 	// todo enemis
+	//std::vector<Enemy> m_enemyList;
 
 	void resetGame();
 	void nextGame();
-	void resetEntitisLocations();
+	void setDefualtEntitisLocations();
 public:
 	int getWidth() const;
 	int getHeight() const;

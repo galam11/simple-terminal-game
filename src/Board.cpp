@@ -61,10 +61,20 @@ void Board::saveEntitisState()
 
 
 
-void Board::drawLevel() const
+void Board::draw() const
 {
 	for (int i = 0; i < m_levelHight; i++)
 		std::cout << m_BoardData[i] << '\n';
+}
+
+bool Board::validLocation(const Location& location) const
+{
+	return 
+		location.col < getWidth()
+		&& location.col >= 0 
+		&& location.row < getHeight() 
+		&& location.row > 0;
+
 }
 
 char Board::getAt(const Location& location) const
@@ -77,7 +87,7 @@ int Board::getWidth() const
 	return m_width;
 }
 
-int Board::getHight() const
+int Board::getHeight() const
 {
 	return m_levelHight;
 }
