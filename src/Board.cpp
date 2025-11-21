@@ -40,6 +40,7 @@ bool Board::loadNext()
 
 void Board::saveEntitisState()
 {
+	m_enemiesStartLocations.clear();
 	for (int i = 0; i < m_levelHight; i++)
 		for (int j = 0; j < m_width; j++)
 		{
@@ -79,7 +80,7 @@ bool Board::validLocation(const Location& location) const
 
 char Board::getAt(const Location& location) const
 {
-	return m_BoardData[location.col][location.row];
+	return m_BoardData[location.row][location.col];
 }
 
 int Board::getWidth() const
@@ -96,3 +97,19 @@ int Board::getLevel() const
 {
 	return m_level;
 }
+
+const Location& Board::getPlayerStartLocation() const
+{
+	return m_playerStartLocation;
+}
+
+const Location& Board::getEnemyStartLocation(int i) const
+{
+	return m_enemiesStartLocations[i];
+}
+
+int Board::getEnemiesCount() const
+{
+	return m_enemiesStartLocations.size();
+}
+

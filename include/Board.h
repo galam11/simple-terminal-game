@@ -38,4 +38,8 @@ public:
 	int getWidth() const;
 	int getHeight() const;
 	int getLevel() const;
+
+	const Location& getPlayerStartLocation() const;
+	const Location& getEnemyStartLocation(int i) const;
+	int getEnemiesCount() const;
 };

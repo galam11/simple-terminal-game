@@ -3,10 +3,13 @@
 
 const std::string FILE_PATH = "Board.txt";
 
-const char ENEMY = '%';
-const char PLAYER = '@';
-const char COIN = '*';
-const char LEDDER = 'H';
-const char RAIL = '-';
-const char FLORE = '#';
-const char EMPTY = ' ';
+
+enum Cells {
+	ENEMY	= '%',
+	PLAYER	= '@',
+	COIN	= '*',
+	LEDDER	= 'H',
+	RAIL	= '-',
+	FLORE	= '#',
+	EMPTY	= ' '
+};

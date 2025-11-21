@@ -3,9 +3,12 @@
 #include "conio.h"
 #include "io.h"
 #include <iostream>
+#include "Location.h"
 
 void Controller::resetGame()
 {
+	Screen::resetLocation();
+	m_board.draw();
 	setDefualtEntitisLocations();
 }
 
@@ -14,14 +17,27 @@ void Controller::nextGame()
 	if ((m_running = m_board.loadNext()))
 	{
 		Screen::resetLocation();
+		system("cls");
 		m_board.draw();
 		setDefualtEntitisLocations();
+	}
+	else
+	{
+		Screen::resetLocation();
+		system("cls");
 	}
 }
 
 void Controller::setDefualtEntitisLocations()
 {
+	// todo set player location
 
+	m_enemyList.clear();
+	for (int i = 0; i < m_board.getEnemiesCount(); i++)
+	{
+		m_enemyList.push_back(Enemy(m_board.getEnemyStartLocation(i)));
+		drawCellAtLocation(ENEMY, m_board.getEnemyStartLocation(i));
+	}
 }
 
 int Controller::getWidth() const
@@ -36,14 +52,36 @@ int Controller::getHeight() const
 
 void Controller::run()
 {
+	nextGame();
+
 	while (m_running)
 	{
 		// todo update enemies
 
-		// todo update player
+		for (int i = 0; i < m_enemyList.size(); i++)
+		{
+			m_enemyList[i].update(*this);
+		}
 
-		if (_getch() == Keys::ESCAPE)
+		switch (_getch())
+		{
+		case Keys::ESCAPE:
+			m_running = false;
+			break;
+
+		case SpecialKeys::RIGHT:
 			endGame();
+			break;
+
+		case SpecialKeys::LEFT:
+			resetGame();
+			break;
+
+		default:
+			break;
+		}
+
+
 	}
 }
 
@@ -61,6 +99,18 @@ void Controller::endGame()
 	//}
 }
 
+void Controller::drawCellAtLocation(Cells cell, const Location& location)
+{
+	Screen::setLocation(location);
+	std::cout << (char)cell;
+}
+
+void Controller::drawDefualtCell(const Location& location)
+{
+	Screen::setLocation(location);
+	std::cout << m_board.getAt(location);
+}
+
 const Location& Controller::getPlayerLocation()
 {
 	// TODO: return player location
@@ -69,27 +119,27 @@ const Location& Controller::getPlayerLocation()
 
 const Location& Controller::getEnemyLocation(int i)
 {
-	// TODO: return enemis location based on index
-	return Location();
+	return m_enemyList[i].getLocation();
 }
 
-char Controller::getCellAtLocation(const Location& location)
+char Controller::getCellAtLocation(const Location& location) const
 {
 	return m_board.getAt(location);
 }
 
-bool Controller::walkbleLocation(const Location& location)
+bool Controller::walkbleLocation(const Location& location) const
 {
-	if (m_board.validLocation(location))
-	{
-		char mid = getCellAtLocation(location);
+	if (!m_board.validLocation(location))
+		return false;
 
-		if (mid == LEDDER || mid == RAIL)
-			return true;
+	char mid = getCellAtLocation(location);
 
-		if (mid == FLORE)
-			return false;
-	}
+	if (mid == LEDDER || mid == RAIL)
+		return true;
+
+	if (mid == FLORE)
+		return false;
+	
 
 	auto downLoc = location.down();
 	if (m_board.validLocation(downLoc))
