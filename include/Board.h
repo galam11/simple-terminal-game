@@ -30,7 +30,7 @@ public:
 	~Board();
 
 	bool loadNext();
-	void drawLevel() const;
+	void draw() const;
 
 	char getAt(const Location& location) const;
 	int getWidth() const;

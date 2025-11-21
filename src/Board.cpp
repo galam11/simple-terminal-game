@@ -61,7 +61,7 @@ void Board::saveEntitisState()
 
 
 
-void Board::drawLevel() const
+void Board::draw() const
 {
 	for (int i = 0; i < m_levelHight; i++)
 		std::cout << m_BoardData[i] << '\n';
