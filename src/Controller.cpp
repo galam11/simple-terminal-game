@@ -13,7 +13,8 @@ void Controller::nextGame()
 {
 	if ((m_running = m_board.loadNext()))
 	{
-		//m_board.draw();
+		Screen::resetLocation();
+		m_board.draw();
 		setDefualtEntitisLocations();
 	}
 }
@@ -30,54 +31,34 @@ int Controller::getWidth() const
 
 int Controller::getHeight() const
 {
-	return m_board.getHight();
+	return m_board.getHeight();
 }
 
 void Controller::run()
 {
-	
-
-	
-	for (int i = 0; i < 20; i++)
+	while (m_running)
 	{
-		Screen::setLocation(Location(0, i));
-		std::cout << '#';
+		// todo update enemies
+
+		// todo update player
+
+		if (_getch() == Keys::ESCAPE)
+			endGame();
 	}
-
-
-	//nextGame();
-
-	//while (m_running)
-	//{
-
-	//	// TODO : update enemis
-
-	//	// TODO : update player
-
-	//	for (int y = 0; y < m_board.getHight(); y++)
-	//		for (int x = 0; x < m_board.getWidth(); x++)
-	//		{
-	//			Location loc (x, y);
-	//			Screen::setLocation(loc);
-	//			char c = getCellAtLocation(loc);
-	//			std::cout << c;
-	//			/*if (walkbleLocation(loc))
-	//			{
-	//				Screen::setLocation(loc);
-	//				std::cout << '&';
-	//			}*/
-	//		}
-	//	
-	//	int t = _getch();
-	//	system("cls");
-	//	nextGame();
-	//	
-	//}
 }
 
 void Controller::endGame()
 {
+	//if (/*check if player health is zero*/)
+	//{
+	//	resetGame();
+	//}
+	//else 
+	//{
 
+		nextGame();
+
+	//}
 }
 
 const Location& Controller::getPlayerLocation()
@@ -99,19 +80,25 @@ char Controller::getCellAtLocation(const Location& location)
 
 bool Controller::walkbleLocation(const Location& location)
 {
-	if (location.col >= getWidth() || location.col < 0 || location.row >= getHeight() || location.row < 0)
-		return false;
+	if (m_board.validLocation(location))
+	{
+		char mid = getCellAtLocation(location);
 
+		if (mid == LEDDER || mid == RAIL)
+			return true;
 
-	char mid = getCellAtLocation(location);
-	char down = getCellAtLocation(location.down());
-	
+		if (mid == FLORE)
+			return false;
+	}
 
-	if (mid == LEDDER || mid == RAIL)
-		return true;
+	auto downLoc = location.down();
+	if (m_board.validLocation(downLoc))
+	{
+		char down = getCellAtLocation(location.down());
 
-	if (down == LEDDER || down == FLORE)
-		return true;
+		if (down == LEDDER || down == FLORE)
+			return true;
+	}
 
 	return false;
 }
