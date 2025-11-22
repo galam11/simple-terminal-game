@@ -14,4 +14,5 @@ enum Cells {
 	EMPTY	= ' '
 };
 
+
 const int LIVES = 3;
