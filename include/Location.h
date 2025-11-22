@@ -10,4 +10,5 @@ struct Location
     Location up() const;
     Location right() const;
     Location left() const;
+    bool operator==(const Location& other) const = default;
 };

@@ -7,21 +7,21 @@
 Enemy::Enemy(const Location& location)
 	: m_location(location) { }
 
-void Enemy::update(Controller& controller)
+void Enemy::move(Controller& controller)
 {
-	auto nextLocation = m_moveRigth ? m_location.right() : m_location.left();
+	auto nextLocation = m_moveRight ? m_location.right() : m_location.left();
 
-	if (controller.walkbleLocation(nextLocation))
+	if (controller.movableLocation(nextLocation))
 	{
 
-		controller.drawDefualtCell(m_location);
+		controller.drawDefaultCell(m_location);
 		controller.drawCellAtLocation(ENEMY, nextLocation);
 		
 		setLocation(nextLocation);
 	}
 	else
 	{
-		m_moveRigth = !m_moveRigth;
+		m_moveRight = !m_moveRight;
 	}
 }
 

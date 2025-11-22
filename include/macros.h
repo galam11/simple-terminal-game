@@ -8,8 +8,10 @@ enum Cells {
 	ENEMY	= '%',
 	PLAYER	= '@',
 	COIN	= '*',
-	LEDDER	= 'H',
+	LADDER	= 'H',
 	RAIL	= '-',
-	FLORE	= '#',
+	FLOOR	= '#',
 	EMPTY	= ' '
 };
+
+const int LIVES = 3;

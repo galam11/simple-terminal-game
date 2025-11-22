@@ -4,12 +4,13 @@
 #include "io.h"
 #include <iostream>
 #include "Location.h"
+#include "Player.h"
 
 void Controller::resetGame()
 {
 	Screen::resetLocation();
 	m_board.draw();
-	setDefualtEntitisLocations();
+	setEntitysStartingLocation();
 }
 
 void Controller::nextGame()
@@ -19,7 +20,7 @@ void Controller::nextGame()
 		Screen::resetLocation();
 		system("cls");
 		m_board.draw();
-		setDefualtEntitisLocations();
+		setEntitysStartingLocation();
 	}
 	else
 	{
@@ -28,15 +29,18 @@ void Controller::nextGame()
 	}
 }
 
-void Controller::setDefualtEntitisLocations()
+void Controller::setEntitysStartingLocation()
 {
-	// todo set player location
+	Location player_location = m_board.getPlayerStartLocation();
+	m_player.setLocation(player_location);
+	drawCellAtLocation(PLAYER, player_location);
 
 	m_enemyList.clear();
 	for (int i = 0; i < m_board.getEnemiesCount(); i++)
 	{
-		m_enemyList.push_back(Enemy(m_board.getEnemyStartLocation(i)));
-		drawCellAtLocation(ENEMY, m_board.getEnemyStartLocation(i));
+		Location enemy_location = m_board.getEnemyStartLocation(i);
+		m_enemyList.push_back(Enemy(enemy_location));
+		drawCellAtLocation(ENEMY, enemy_location);
 	}
 }
 
@@ -60,21 +64,34 @@ void Controller::run()
 
 		for (int i = 0; i < m_enemyList.size(); i++)
 		{
-			m_enemyList[i].update(*this);
+			m_enemyList[i].move(*this);
 		}
 
 		switch (_getch())
 		{
 		case Keys::ESCAPE:
-			m_running = false;
+			nextGame();
+			//m_running = false;
+			break;
+
+		case Keys::SPECIAL_KEY: //is this supposed to be spacebar?
+
 			break;
 
 		case SpecialKeys::RIGHT:
-			endGame();
+			m_player.move(*this, m_player.getLocation().right());
 			break;
 
 		case SpecialKeys::LEFT:
-			resetGame();
+			m_player.move(*this, m_player.getLocation().left());
+			break;
+
+		case SpecialKeys::UP:
+			m_player.move(*this, m_player.getLocation().up());
+			break;
+
+		case SpecialKeys::DOWN:
+			m_player.move(*this, m_player.getLocation().down());
 			break;
 
 		default:
@@ -87,16 +104,14 @@ void Controller::run()
 
 void Controller::endGame()
 {
-	//if (/*check if player health is zero*/)
-	//{
-	//	resetGame();
-	//}
-	//else 
-	//{
-
+	if (m_player.getLives() == 0)
+	{
+		resetGame();
+	}
+	else
+	{
 		nextGame();
-
-	//}
+	}
 }
 
 void Controller::drawCellAtLocation(Cells cell, const Location& location)
@@ -105,19 +120,19 @@ void Controller::drawCellAtLocation(Cells cell, const Location& location)
 	std::cout << (char)cell;
 }
 
-void Controller::drawDefualtCell(const Location& location)
+void Controller::drawDefaultCell(const Location& location)
 {
 	Screen::setLocation(location);
 	std::cout << m_board.getAt(location);
 }
 
-const Location& Controller::getPlayerLocation()
+const Location& Controller::getPlayerLocation() const //what for?
 {
 	// TODO: return player location
 	return Location();
 }
 
-const Location& Controller::getEnemyLocation(int i)
+const Location& Controller::getEnemyLocation(int i) const //what for?
 {
 	return m_enemyList[i].getLocation();
 }
@@ -127,26 +142,26 @@ char Controller::getCellAtLocation(const Location& location) const
 	return m_board.getAt(location);
 }
 
-bool Controller::walkbleLocation(const Location& location) const
+bool Controller::movableLocation(const Location& location) const
 {
-	if (!m_board.validLocation(location))
+	if (!m_board.LocationInBoard(location))
 		return false;
 
 	char mid = getCellAtLocation(location);
 
-	if (mid == LEDDER || mid == RAIL)
+	if (mid == LADDER || mid == RAIL)
 		return true;
 
-	if (mid == FLORE)
+	if (mid == FLOOR)
 		return false;
 	
 
-	auto downLoc = location.down();
-	if (m_board.validLocation(downLoc))
+	auto belowLocation = location.down();
+	if (m_board.LocationInBoard(belowLocation))
 	{
-		char down = getCellAtLocation(location.down());
+		char down = getCellAtLocation(location.down()); //why not belowLocation?
 
-		if (down == LEDDER || down == FLORE)
+		if (down == FLOOR) //Player cant go ontop of ladder by rules
 			return true;
 	}
 

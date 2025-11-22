@@ -12,8 +12,8 @@
 class Board
 {
 private:
-	int m_level = 0;
-	int m_width = 0, m_levelHight = 0;
+	int m_level = 1;
+	int m_width = 0, m_levelHeight = 0;
 	std::vector<std::string> m_BoardData;
 
 
@@ -21,9 +21,9 @@ private:
 	std::vector<Location> m_enemiesStartLocations;
 	Location m_playerStartLocation = Location(0,0);
 	
-	std::ifstream m_inputStreem;
+	std::ifstream m_inputStream;
 
-	void saveEntitisState();
+	void saveEntityState();
 
 public:
 	Board();
@@ -32,7 +32,7 @@ public:
 	bool loadNext();
 	void draw() const;
 
-	bool validLocation(const Location& location) const;
+	bool LocationInBoard(const Location& location) const;
 
 	char getAt(const Location& location) const;
 	int getWidth() const;

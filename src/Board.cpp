@@ -5,12 +5,12 @@
 
 Board::Board()
 {
-	m_inputStreem.open(FILE_PATH);
+	m_inputStream.open(FILE_PATH);
 }
 
 Board::~Board()
 {
-	m_inputStreem.close();
+	m_inputStream.close();
 }
 
 bool Board::loadNext()
@@ -18,30 +18,30 @@ bool Board::loadNext()
 	m_level++;
 
 	std::string buffer;
-	std::getline(m_inputStreem, buffer);
+	std::getline(m_inputStream, buffer);
 
 	if (buffer.empty())
 		return false;
 
-	m_levelHight = std::stoi(buffer);
+	m_levelHeight = std::stoi(buffer);
 
 	m_BoardData.clear();
 
-	for (int i = 0; i < m_levelHight; i++) 
+	for (int i = 0; i < m_levelHeight; i++) 
 	{
-		std::getline(m_inputStreem, buffer);
+		std::getline(m_inputStream, buffer);
 		m_BoardData.push_back(buffer);
 	}
 	m_width = m_BoardData[0].length();
-	saveEntitisState();
+	saveEntityState();
 
 	return true;
 }
 
-void Board::saveEntitisState()
+void Board::saveEntityState()
 {
 	m_enemiesStartLocations.clear();
-	for (int i = 0; i < m_levelHight; i++)
+	for (int i = 0; i < m_levelHeight; i++)
 		for (int j = 0; j < m_width; j++)
 		{
 			char& charAt = m_BoardData[i][j];
@@ -64,11 +64,11 @@ void Board::saveEntitisState()
 
 void Board::draw() const
 {
-	for (int i = 0; i < m_levelHight; i++)
+	for (int i = 0; i < m_levelHeight; i++)
 		std::cout << m_BoardData[i] << '\n';
 }
 
-bool Board::validLocation(const Location& location) const
+bool Board::LocationInBoard(const Location& location) const
 {
 	return 
 		location.col < getWidth()
@@ -90,7 +90,7 @@ int Board::getWidth() const
 
 int Board::getHeight() const
 {
-	return m_levelHight;
+	return m_levelHeight;
 }
 
 int Board::getLevel() const
