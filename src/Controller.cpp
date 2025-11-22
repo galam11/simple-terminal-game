@@ -9,7 +9,7 @@ void Controller::resetGame()
 {
 	Screen::resetLocation();
 	m_board.draw();
-	setDefualtEntitisLocations();
+	setEntitisDefualtLocations();
 }
 
 void Controller::nextGame()
@@ -19,7 +19,10 @@ void Controller::nextGame()
 		Screen::resetLocation();
 		system("cls");
 		m_board.draw();
-		setDefualtEntitisLocations();
+
+		m_enemyList.resize(m_board.getEnemiesCount());
+
+		setEntitisDefualtLocations();
 	}
 	else
 	{
@@ -28,15 +31,14 @@ void Controller::nextGame()
 	}
 }
 
-void Controller::setDefualtEntitisLocations()
+void Controller::setEntitisDefualtLocations()
 {
 	// todo set player location
 
-	m_enemyList.clear();
-	for (int i = 0; i < m_board.getEnemiesCount(); i++)
+	
+	for (int i = 0; i <m_enemyList.size(); i++)
 	{
-		m_enemyList.push_back(Enemy(m_board.getEnemyStartLocation(i)));
-		drawCellAtLocation(ENEMY, m_board.getEnemyStartLocation(i));
+		m_enemyList[i].setLocation(m_board.getEnemyStartLocation(i));
 	}
 }
 
@@ -63,6 +65,8 @@ void Controller::run()
 			m_enemyList[i].update(*this);
 		}
 
+
+		// temp fpr debuging
 		switch (_getch())
 		{
 		case Keys::ESCAPE:

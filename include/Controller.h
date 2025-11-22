@@ -20,7 +20,7 @@ private:
 
 	void resetGame();
 	void nextGame();
-	void setDefualtEntitisLocations();
+	void setEntitisDefualtLocations();
 public:
 	int getWidth() const;
 	int getHeight() const;
