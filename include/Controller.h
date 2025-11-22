@@ -3,7 +3,6 @@
 #include "Enemy.h"
 #include <vector>
 
-enum Cells;
 class Location;
 
 class Controller
@@ -28,11 +27,11 @@ public:
 	void run();
 	void endGame();
 
-	void drawCellAtLocation(Cells cell, const Location& location);
+	void drawCellAtLocation(char cell, const Location& location);
 	void drawDefualtCell(const Location& location);
 
-	const Location& getPlayerLocation();
-	const Location& getEnemyLocation(int i);
+	const Location& getPlayerLocation() const;
+	const Location& getEnemyLocation(int i) const;
 
 	char getCellAtLocation(const Location& location) const;
 	bool walkbleLocation(const Location& location) const;

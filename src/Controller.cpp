@@ -103,7 +103,7 @@ void Controller::endGame()
 	//}
 }
 
-void Controller::drawCellAtLocation(Cells cell, const Location& location)
+void Controller::drawCellAtLocation(char cell, const Location& location)
 {
 	Screen::setLocation(location);
 	std::cout << (char)cell;
@@ -111,24 +111,23 @@ void Controller::drawCellAtLocation(Cells cell, const Location& location)
 
 void Controller::drawDefualtCell(const Location& location)
 {
-	Screen::setLocation(location);
-	std::cout << m_board.getAt(location);
+	drawCellAtLocation((char)getCellAtLocation(location), location);
 }
 
-const Location& Controller::getPlayerLocation()
+const Location& Controller::getPlayerLocation() const
 {
 	// TODO: return player location
 	return Location();
 }
 
-const Location& Controller::getEnemyLocation(int i)
+const Location& Controller::getEnemyLocation(int i) const
 {
 	return m_enemyList[i].getLocation();
 }
 
 char Controller::getCellAtLocation(const Location& location) const
 {
-	return m_board.getAt(location);
+	return (char) m_board.getAt(location);
 }
 
 bool Controller::walkbleLocation(const Location& location) const
@@ -136,7 +135,7 @@ bool Controller::walkbleLocation(const Location& location) const
 	if (!m_board.validLocation(location))
 		return false;
 
-	char mid = getCellAtLocation(location);
+	auto mid = m_board.getAt(location);
 
 	if (mid == LEDDER || mid == RAIL)
 		return true;
@@ -148,7 +147,7 @@ bool Controller::walkbleLocation(const Location& location) const
 	auto downLoc = location.down();
 	if (m_board.validLocation(downLoc))
 	{
-		char down = getCellAtLocation(location.down());
+		auto down = m_board.getAt(downLoc);
 
 		if (down == LEDDER || down == FLORE)
 			return true;
