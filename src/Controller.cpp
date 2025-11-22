@@ -20,6 +20,9 @@ void Controller::nextGame()
 		Screen::resetLocation();
 		system("cls");
 		m_board.draw();
+
+		m_enemyList.resize(m_board.getEnemiesCount());
+
 		setEntitysStartingLocation();
 	}
 	else
@@ -35,12 +38,13 @@ void Controller::setEntitysStartingLocation()
 	m_player.setLocation(player_location);
 	drawCellAtLocation(PLAYER, player_location);
 
-	m_enemyList.clear();
-	for (int i = 0; i < m_board.getEnemiesCount(); i++)
+	
+	for (int i = 0; i <m_enemyList.size(); i++)
 	{
-		Location enemy_location = m_board.getEnemyStartLocation(i);
-		m_enemyList.push_back(Enemy(enemy_location));
-		drawCellAtLocation(ENEMY, enemy_location);
+		m_enemyList[i].setLocation(m_board.getEnemyStartLocation(i));
+		//Location enemy_location = m_board.getEnemyStartLocation(i);
+		//m_enemyList.push_back(Enemy(enemy_location));
+		//drawCellAtLocation(ENEMY, enemy_location);
 	}
 }
 
@@ -67,6 +71,8 @@ void Controller::run()
 			m_enemyList[i].move(*this);
 		}
 
+
+		// temp fpr debuging
 		switch (_getch())
 		{
 		case Keys::ESCAPE:
@@ -114,7 +120,7 @@ void Controller::endGame()
 	}
 }
 
-void Controller::drawCellAtLocation(Cells cell, const Location& location)
+void Controller::drawCellAtLocation(char cell, const Location& location)
 {
 	Screen::setLocation(location);
 	std::cout << (char)cell;
@@ -122,8 +128,7 @@ void Controller::drawCellAtLocation(Cells cell, const Location& location)
 
 void Controller::drawDefaultCell(const Location& location)
 {
-	Screen::setLocation(location);
-	std::cout << m_board.getAt(location);
+	drawCellAtLocation((char)getCellAtLocation(location), location);
 }
 
 const Location& Controller::getPlayerLocation() const //what for?
@@ -139,7 +144,7 @@ const Location& Controller::getEnemyLocation(int i) const //what for?
 
 char Controller::getCellAtLocation(const Location& location) const
 {
-	return m_board.getAt(location);
+	return (char) m_board.getAt(location);
 }
 
 bool Controller::movableLocation(const Location& location) const
@@ -147,7 +152,7 @@ bool Controller::movableLocation(const Location& location) const
 	if (!m_board.LocationInBoard(location))
 		return false;
 
-	char mid = getCellAtLocation(location);
+	auto mid = m_board.getAt(location);
 
 	if (mid == LADDER || mid == RAIL)
 		return true;
@@ -159,7 +164,7 @@ bool Controller::movableLocation(const Location& location) const
 	auto belowLocation = location.down();
 	if (m_board.LocationInBoard(belowLocation))
 	{
-		char down = getCellAtLocation(location.down()); //why not belowLocation?
+		char down = getCellAtLocation(location.down());
 
 		if (down == FLOOR) //Player cant go ontop of ladder by rules
 			return true;

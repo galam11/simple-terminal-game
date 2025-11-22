@@ -4,7 +4,6 @@
 #include <vector>
 #include "Player.h"
 
-enum Cells;
 class Location;
 
 class Controller
@@ -29,10 +28,10 @@ public:
 	void run();
 	void endGame();
 
-	void drawCellAtLocation(Cells cell, const Location& location);
+	void drawCellAtLocation(char cell, const Location& location);
 	void drawDefaultCell(const Location& location);
 
-	const Location& getPlayerLocation() const;     
+	const Location& getPlayerLocation() const;
 	const Location& getEnemyLocation(int i) const;
 
 	char getCellAtLocation(const Location& location) const;
