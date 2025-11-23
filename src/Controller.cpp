@@ -60,6 +60,21 @@ int Controller::getHeight() const
 	return m_board.getHeight();
 }
 
+char Controller::getCellAtLocation(const Location& location)
+{
+	return m_board.getAt(location);
+}
+
+bool Controller::validLocationInBoard(const Location& location) const
+{
+	return m_board.LocationInBounds(location);
+}
+
+int Controller::getLevel() const
+{
+	return m_board.getLevel();
+}
+
 void Controller::run()
 {
 	nextLevel();
@@ -68,11 +83,19 @@ void Controller::run()
 	{
 		m_player.move(*this);
 
+		//if (m_player.coinCollsionCheck(*this))
+		//	m_board.removeCoin(m_player.getLocation());
+
+		if (m_player.enemyCollisionCheck(*this))
+			resetLevel();
+
 		for (int i = 0; i < m_enemyList.size(); i++)
 			m_enemyList[i].move(*this);
 
 		if (m_player.enemyCollisionCheck(*this))
 			resetLevel();
+
+
 
 	}
 }
@@ -106,7 +129,7 @@ const Location& Controller::getEnemyLocation(int i) const //what for?
 
 bool Controller::movableLocation(const Location& location) const
 {
-	if (!m_board.LocationInBoard(location))
+	if (!m_board.LocationInBounds(location))
 		return false;
 
 	auto mid = m_board.getAt(location);
@@ -119,7 +142,7 @@ bool Controller::movableLocation(const Location& location) const
 	
 
 	auto belowLocation = location.down();
-	if (m_board.LocationInBoard(belowLocation))
+	if (m_board.LocationInBounds(belowLocation))
 	{
 		char down = m_board.getAt(belowLocation);
 

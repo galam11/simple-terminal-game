@@ -22,6 +22,11 @@ public:
 	int getWidth() const;
 	int getHeight() const;
 
+	int getLevel() const;
+
+	char getCellAtLocation(const Location& location);
+	bool validLocationInBoard(const Location& location) const;
+
 	void run();
 	//void endGame();
 
@@ -31,7 +36,6 @@ public:
 	const Location& getPlayerLocation() const;
 	const Location& getEnemyLocation(int i) const;
 
-	
 	bool movableLocation(const Location& location) const;
 
 	int getNumberOfEnemies();

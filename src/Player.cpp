@@ -37,10 +37,15 @@ void Player::resetCoins()
 	m_coins = 0;
 }
 
-void Player::coinCollected(const int level)
+bool Player::coinCollsionCheck(Controller& controller)
 {
-	m_coins++;
-	updateScore(true, level);
+	if (controller.getCellAtLocation(getLocation()) == COIN)
+	{
+		m_coins++;
+		updateScore(true, controller.getLevel());
+		return true;
+	}
+	return false;
 }
 
 void Player::move(Controller& controller)
@@ -51,16 +56,16 @@ void Player::move(Controller& controller)
 		
 		int input = _getch();
 
-		if (input == SpecialKeys::RIGHT && canMoveRightLeft())
+		if (input == SpecialKeys::RIGHT && canMoveRightLeft(controller))
 			nextLocation = m_location.right();
 
-		else if (input == SpecialKeys::LEFT && canMoveRightLeft())
+		else if (input == SpecialKeys::LEFT && canMoveRightLeft(controller))
 			nextLocation = m_location.left();
 
-		else if (input == SpecialKeys::UP && canMoveUpDown())
+		else if (input == SpecialKeys::UP && canMoveUpDown(controller))
 			nextLocation = m_location.up();
 
-		else if (input == SpecialKeys::DOWN && canMoveUpDown())
+		else if (input == SpecialKeys::DOWN && canMoveUpDown(controller))
 			nextLocation = m_location.down();
 		
 
@@ -76,14 +81,25 @@ void Player::move(Controller& controller)
 	}
 }
 
-bool Player::canMoveRightLeft()
+bool Player::canMoveRightLeft(Controller& controller)
 {
-	return true;
+	auto downloc = m_location.down();
+
+	if (controller.validLocationInBoard(downloc))
+	{
+		auto cInLoc = controller.getCellAtLocation(m_location);
+		auto cInDownLoc = controller.getCellAtLocation(downloc);
+
+		if (cInDownLoc == FLOOR || cInLoc == RAIL)
+			return true;
+	}
+
+	return false;
 }
 
-bool Player::canMoveUpDown()
+bool Player::canMoveUpDown(Controller& controller)
 {
-	return true;
+	return controller.getCellAtLocation(m_location) == LADDER;
 }
 
 

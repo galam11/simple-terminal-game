@@ -13,6 +13,11 @@ Board::~Board()
 	m_inputStream.close();
 }
 
+void Board::removeCoin(const Location& location)
+{
+	m_BoardData[location.row][location.col] = EMPTY;
+}
+
 bool Board::loadNext()
 {
 	m_level++;
@@ -71,7 +76,7 @@ void Board::draw() const
 		std::cout << m_BoardData[i] << '\n';
 }
 
-bool Board::LocationInBoard(const Location& location) const
+bool Board::LocationInBounds(const Location& location) const
 {
 	return 
 		location.col < getWidth()

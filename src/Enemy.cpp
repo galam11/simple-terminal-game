@@ -9,7 +9,7 @@ Enemy::Enemy(const Location& location)
 
 void Enemy::move(Controller& controller)
 {
-	/*auto nextLocation = m_moveRight ? m_location.right() : m_location.left();
+	auto nextLocation = m_moveRight ? m_location.right() : m_location.left();
 
 	if (controller.movableLocation(nextLocation))
 	{
@@ -22,7 +22,7 @@ void Enemy::move(Controller& controller)
 	else
 	{
 		m_moveRight = !m_moveRight;
-	}*/
+	}
 }
 
 void Enemy::setLocation(const Location& location)

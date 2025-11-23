@@ -15,6 +15,7 @@ public:
 	void move(Controller& controller);
 	void setLocation(const Location& location);
 	const Location& getLocation() const;
+	
 
 	const int getLives() const;
 
@@ -23,15 +24,15 @@ public:
 	void resetCoins();
 	//const int getCoins() const;
 	bool enemyCollisionCheck(Controller& controller);
+	bool coinCollsionCheck(Controller& controller);
 
 private:
 
 	//void enemyCollision(Controller& controller);
 	void reduceLives();
-	void coinCollected(const int level);
 
-	bool canMoveRightLeft();
-	bool canMoveUpDown();
+	bool canMoveRightLeft(Controller& controller);
+	bool canMoveUpDown(Controller& controller);
 
 	Location m_location = Location(0, 0);
 	int m_lives = LIVES;

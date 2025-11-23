@@ -32,13 +32,14 @@ public:
 	bool loadNext();
 	void draw() const;
 
-	bool LocationInBoard(const Location& location) const;
+	bool LocationInBounds(const Location& location) const;
 
 	char getAt(const Location& location) const;
 	int getWidth() const;
 	int getHeight() const;
 	int getLevel() const;
 	int getCoinsInLevel() const;
+	void removeCoin(const Location& location);
 
 	const Location& getPlayerStartLocation() const;
 	const Location& getEnemyStartLocation(int i) const;
