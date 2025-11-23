@@ -12,21 +12,18 @@ private:
 	Board m_board;
 	bool m_running = true;
 
-	// todo player
-	Player m_player;
-	// 
-	// todo enemis
+	Player m_player; 
 	std::vector<Enemy> m_enemyList;
 
-	void resetGame();
-	void nextGame();
+	void resetLevel();
+	void nextLevel();
 	void setEntitysStartingLocation();
 public:
 	int getWidth() const;
 	int getHeight() const;
 
 	void run();
-	void endGame();
+	//void endGame();
 
 	void drawCellAtLocation(char cell, const Location& location);
 	void drawDefaultCell(const Location& location);
@@ -34,6 +31,11 @@ public:
 	const Location& getPlayerLocation() const;
 	const Location& getEnemyLocation(int i) const;
 
-	char getCellAtLocation(const Location& location) const;
-	bool movableLocation(const Location& location) const;
+	//char getCellAtLocation(const Location& location) const;
+	//bool movableLocation(const Location& location) const;
+
+	bool canMoveRightLeft(const Location& locationamespace, bool) const;
+	bool canMoveUpDown(const Location& location, bool) const;
+
+	void levelSuccess();
 };

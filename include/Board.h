@@ -12,12 +12,12 @@
 class Board
 {
 private:
-	int m_level = 1;
+	int m_level = 0;
 	int m_width = 0, m_levelHeight = 0;
 	std::vector<std::string> m_BoardData;
+	int m_coinsInLevel;
 
-
-	// Board class has the defualt locaition of enemies and the player
+	// Board class has the default locaition of enemies and the player
 	std::vector<Location> m_enemiesStartLocations;
 	Location m_playerStartLocation = Location(0,0);
 	
@@ -38,6 +38,7 @@ public:
 	int getWidth() const;
 	int getHeight() const;
 	int getLevel() const;
+	int getCoinsInLevel() const;
 
 	const Location& getPlayerStartLocation() const;
 	const Location& getEnemyStartLocation(int i) const;

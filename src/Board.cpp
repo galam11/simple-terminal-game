@@ -41,6 +41,7 @@ bool Board::loadNext()
 void Board::saveEntityState()
 {
 	m_enemiesStartLocations.clear();
+	m_coinsInLevel = 0;
 	for (int i = 0; i < m_levelHeight; i++)
 		for (int j = 0; j < m_width; j++)
 		{
@@ -54,6 +55,8 @@ void Board::saveEntityState()
 				charAt = EMPTY;
 				m_playerStartLocation = Location(i, j);
 				break;
+			case COIN:
+				m_coinsInLevel++;
 			default:
 				break;
 			}
@@ -113,3 +116,7 @@ int Board::getEnemiesCount() const
 	return m_enemiesStartLocations.size();
 }
 
+int Board::getCoinsInLevel() const
+{
+	return m_coinsInLevel;
+}
