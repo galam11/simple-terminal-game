@@ -48,53 +48,55 @@ void Player::move(Controller& controller)
 	while (true) {
 
 		Location nextLocation;
-		switch (_getch())
-		{
-		case SpecialKeys::RIGHT:
-			if (!controller.canMoveRightLeft(m_location, true))
-				continue;
-			nextLocation = m_location.right();
-			break;
-
-		case SpecialKeys::LEFT:
-			if (!controller.canMoveRightLeft(m_location, false))
-				continue;
-			nextLocation = m_location.left();
-			break;
-
-		case SpecialKeys::UP:
-			if (!controller.canMoveUpDown(m_location, true))
-				continue;
-			nextLocation = m_location.up();
-			break;
-
-		case SpecialKeys::DOWN:
-			if (!controller.canMoveRightLeft(m_location, false))
-				continue;
-			nextLocation = m_location.down();
-			break;
-
-		default:
-			continue;
-		}
-
 		
-		controller.drawDefaultCell(m_location);
-		controller.drawCellAtLocation(PLAYER, nextLocation);
+		int input = _getch();
 
-		setLocation(nextLocation);
-		break;
+		if (input == SpecialKeys::RIGHT && canMoveRightLeft())
+			nextLocation = m_location.right();
+
+		else if (input == SpecialKeys::LEFT && canMoveRightLeft())
+			nextLocation = m_location.left();
+
+		else if (input == SpecialKeys::UP && canMoveUpDown())
+			nextLocation = m_location.up();
+
+		else if (input == SpecialKeys::DOWN && canMoveUpDown())
+			nextLocation = m_location.down();
+		
+
+		if (controller.movableLocation(nextLocation))
+		{ 
+			controller.drawDefaultCell(m_location);
+			controller.drawCellAtLocation(PLAYER, nextLocation);
+
+			setLocation(nextLocation);
+			break;
+		}
 		
 	}
 }
 
-//void Player::enemyCollision(Controller& controller)
-//{
-//
-//}
-//
-//bool Player::enemyCollisionCheck(Controller& controller)
-//{
-//	for (int)
-//	if (getLocation() == controller.getEnemyLocation())
-//}
+bool Player::canMoveRightLeft()
+{
+	return true;
+}
+
+bool Player::canMoveUpDown()
+{
+	return true;
+}
+
+
+
+bool Player::enemyCollisionCheck(Controller& controller)
+{
+	for (int i = 0; i < controller.getNumberOfEnemies(); i++)
+	{
+		if (getLocation() == controller.getEnemyLocation(i))
+		{
+			reduceLives();
+			return true;
+		}
+	}
+	return false;
+}

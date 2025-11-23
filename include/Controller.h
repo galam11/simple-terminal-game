@@ -31,11 +31,10 @@ public:
 	const Location& getPlayerLocation() const;
 	const Location& getEnemyLocation(int i) const;
 
-	//char getCellAtLocation(const Location& location) const;
-	//bool movableLocation(const Location& location) const;
+	
+	bool movableLocation(const Location& location) const;
 
-	bool canMoveRightLeft(const Location& locationamespace, bool) const;
-	bool canMoveUpDown(const Location& location, bool) const;
+	int getNumberOfEnemies();
 
 	void levelSuccess();
 };

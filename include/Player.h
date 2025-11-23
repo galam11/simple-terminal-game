@@ -22,13 +22,17 @@ public:
 
 	void resetCoins();
 	//const int getCoins() const;
-	//bool enemyCollisionCheck(Controller& controller);
+	bool enemyCollisionCheck(Controller& controller);
 
 private:
 
 	//void enemyCollision(Controller& controller);
 	void reduceLives();
 	void coinCollected(const int level);
+
+	bool canMoveRightLeft();
+	bool canMoveUpDown();
+
 	Location m_location = Location(0, 0);
 	int m_lives = LIVES;
 	int m_coins = 0;
