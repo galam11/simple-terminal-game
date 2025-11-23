@@ -83,8 +83,8 @@ void Controller::run()
 	{
 		m_player.move(*this);
 
-		//if (m_player.coinCollsionCheck(*this))
-		//	m_board.removeCoin(m_player.getLocation());
+		if (m_player.coinCollsionCheck(*this))
+			m_board.removeCoin(m_player.getLocation());
 
 		if (m_player.enemyCollisionCheck(*this))
 			resetLevel();
@@ -122,7 +122,7 @@ const Location& Controller::getPlayerLocation() const //what for?
 	return Location();
 }
 
-const Location& Controller::getEnemyLocation(int i) const //what for?
+const Location& Controller::getEnemyLocation(int i) const
 {
 	return m_enemyList[i].getLocation();
 }
@@ -146,7 +146,7 @@ bool Controller::movableLocation(const Location& location) const
 	{
 		char down = m_board.getAt(belowLocation);
 
-		if (down == FLOOR) //Player cant go ontop of ladder by rules
+		if (down == FLOOR)
 			return true;
 	}
 
