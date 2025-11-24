@@ -85,7 +85,7 @@ bool Board::LocationInBounds(const Location& location) const
 		location.col < getWidth()
 		&& location.col >= 0 
 		&& location.row < getHeight() 
-		&& location.row > 0;
+		&& location.row >= 0;
 
 }
 
