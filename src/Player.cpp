@@ -52,57 +52,71 @@ void Player::move(Controller& controller)
 {
 	while (true) {
 
-		Location nextLocation;
+		Location nextLocation = Location(0, 0);
 		
 		int input = _getch();
 
-		if (input == SpecialKeys::RIGHT && canMoveRightLeft(controller))
+		if (input == SpecialKeys::RIGHT)
+		{
 			nextLocation = m_location.right();
-
-		else if (input == SpecialKeys::LEFT && canMoveRightLeft(controller))
-			nextLocation = m_location.left();
-
-		else if (input == SpecialKeys::UP && canMoveUpDown(controller))
-			nextLocation = m_location.up();
-
-		else if (input == SpecialKeys::DOWN && canMoveUpDown(controller))
-			nextLocation = m_location.down();
-		
-
-		if (controller.movableLocation(nextLocation))
-		{ 
-			controller.drawDefaultCell(m_location);
-			controller.drawCellAtLocation(PLAYER, nextLocation);
-
-			setLocation(nextLocation);
-			break;
+			if (!canMoveRightLeft(controller, nextLocation))
+				continue;
 		}
+		else if (input == SpecialKeys::LEFT)
+		{
+			nextLocation = m_location.left();
+			if (!canMoveRightLeft(controller, nextLocation))
+				continue;
+		}
+		else if (input == SpecialKeys::DOWN)
+		{
+			nextLocation = m_location.down();
+			if (!canMoveUpDown(controller, nextLocation))
+				continue;
+		}
+		else if (input == SpecialKeys::UP)
+		{
+			nextLocation = m_location.up();
+			if (!canMoveUpDown(controller, nextLocation))
+				continue;
+		}
+		else continue;
+
 		
+
+		//if (controller.movableLocation(nextLocation))
+		//{ 
+		controller.drawDefaultCell(m_location);
+		controller.drawCellAtLocation(PLAYER, nextLocation);
+
+		setLocation(nextLocation);
+		break;
+		//}
 	}
 }
 
-bool Player::canMoveRightLeft(Controller& controller)
+bool Player::canMoveRightLeft(Controller& controller, const Location& location)
 {
-	auto downloc = m_location.down();
+	if (!controller.validLocationInBoard(location))
+		return false;
 
-	if (controller.validLocationInBoard(downloc))
+	auto belowLocation = location.down();
+	if (controller.validLocationInBoard(belowLocation))
 	{
-		auto cInLoc = controller.getCellAtLocation(m_location);
-		auto cInDownLoc = controller.getCellAtLocation(downloc);
-
-		if (cInDownLoc == FLOOR || cInLoc == RAIL)
+		auto down = controller.getCellAtLocation(belowLocation);
+		if ((down == FLOOR || down == LADDER) && controller.getCellAtLocation(location) != FLOOR)
 			return true;
 	}
 
-	return false;
+	return controller.getCellAtLocation(location) == RAIL;
 }
 
-bool Player::canMoveUpDown(Controller& controller)
+bool Player::canMoveUpDown(Controller& controller, const Location& location)
 {
-	return controller.getCellAtLocation(m_location) == LADDER;
+	return controller.validLocationInBoard(location) 
+		&& controller.getCellAtLocation(location) == LADDER
+		&& controller.getCellAtLocation(m_location) == LADDER;
 }
-
-
 
 bool Player::enemyCollisionCheck(Controller& controller)
 {

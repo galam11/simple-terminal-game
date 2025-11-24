@@ -21,7 +21,6 @@ private:
 public:
 	int getWidth() const;
 	int getHeight() const;
-
 	int getLevel() const;
 
 	char getCellAtLocation(const Location& location);

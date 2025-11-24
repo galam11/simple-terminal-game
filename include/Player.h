@@ -31,8 +31,8 @@ private:
 	//void enemyCollision(Controller& controller);
 	void reduceLives();
 
-	bool canMoveRightLeft(Controller& controller);
-	bool canMoveUpDown(Controller& controller);
+	bool canMoveRightLeft(Controller& controller, const Location& location);
+	bool canMoveUpDown(Controller& controller, const Location& location);
 
 	Location m_location = Location(0, 0);
 	int m_lives = LIVES;

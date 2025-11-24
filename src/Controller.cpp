@@ -44,7 +44,7 @@ void Controller::setEntitysStartingLocation()
 	drawCellAtLocation(PLAYER, player_location);
 
 	
-	for (int i = 0; i <m_enemyList.size(); i++)
+	for (int i = 0; i < m_enemyList.size(); i++)
 	{
 		m_enemyList[i].setLocation(m_board.getEnemyStartLocation(i));
 	}
@@ -81,6 +81,9 @@ void Controller::run()
 
 	while (m_running)
 	{
+		if (m_player.enemyCollisionCheck(*this))
+			resetLevel();
+
 		m_player.move(*this);
 
 		if (m_player.coinCollsionCheck(*this))
@@ -91,18 +94,12 @@ void Controller::run()
 
 		for (int i = 0; i < m_enemyList.size(); i++)
 			m_enemyList[i].move(*this);
-
-		if (m_player.enemyCollisionCheck(*this))
-			resetLevel();
-
-
-
 	}
 }
 
 void Controller::levelSuccess()
 {
-	//
+	
 }
 
 void Controller::drawCellAtLocation(char cell, const Location& location)
@@ -152,3 +149,5 @@ bool Controller::movableLocation(const Location& location) const
 
 	return false;
 }
+
+
