@@ -7,10 +7,28 @@
 #include "macros.h"
 
 
-
-// Board class - can be renamed to Bored
 class Board
 {
+public:
+	Board();
+	~Board();
+
+	bool loadNext();
+	void draw() const;
+
+	char getAt(const Location& location) const;
+	int getWidth() const;
+	int getHeight() const;
+	int getLevel() const;
+	int getCoinsInLevel() const;
+	int getEnemiesCount() const;
+
+	const Location& getPlayerStartLocation() const;
+	const Location& getEnemyStartLocation(int i) const;
+
+	bool removeCoin(const Location& location);
+	bool LocationInBounds(const Location& location) const;
+
 private:
 	int m_level = 0;
 	int m_width = 0, m_levelHeight = 0;
@@ -24,24 +42,4 @@ private:
 	std::ifstream m_inputStream;
 
 	void saveEntityState();
-
-public:
-	Board();
-	~Board();
-
-	bool loadNext();
-	void draw() const;
-
-	bool LocationInBounds(const Location& location) const;
-
-	char getAt(const Location& location) const;
-	int getWidth() const;
-	int getHeight() const;
-	int getLevel() const;
-	int getCoinsInLevel() const;
-	bool removeCoin(const Location& location);
-
-	const Location& getPlayerStartLocation() const;
-	const Location& getEnemyStartLocation(int i) const;
-	int getEnemiesCount() const;
 };

@@ -17,11 +17,6 @@ const Location& Player::getLocation() const
 	return m_location;
 }
 
-void Player::reduceLives()
-{
-	m_lives--;
-}
-
 const int Player::getLives() const
 {
 	return m_lives;
@@ -29,7 +24,7 @@ const int Player::getLives() const
 
 void Player::updateScore(bool isCoin, const int level)
 {
-	m_score += ((isCoin) ? 2 : 50) * level;
+	m_score += ((isCoin) ? COIN_SCORE : LEVEL_UP_SCORE) * level;
 }
 
 int Player::getScore()
@@ -149,7 +144,7 @@ bool Player::enemyCollisionCheck(Controller& controller)
 	{
 		if (getLocation() == controller.getEnemyLocation(i))
 		{
-			reduceLives();
+			m_lives--;
 			return true;
 		}
 	}

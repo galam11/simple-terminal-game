@@ -8,14 +8,12 @@ class Controller;
 class Player
 {
 public:
-
 	Player() = default;
 	Player(const Location& location);
 
 	bool update(Controller& controller);
 	void draw(Controller& controller);
-	void move(Controller& controller);
-
+	
 	void setLocation(const Location& location);
 	const Location& getLocation() const;
 	
@@ -26,12 +24,13 @@ public:
 
 	void resetCoins();
 	const int getCoins() const;
-	bool enemyCollisionCheck(Controller& controller);
-	bool coinCollsionCheck(Controller& controller);
+
 
 private:
-	//void enemyCollision(Controller& controller);
-	void reduceLives();
+
+	void move(Controller& controller);
+	bool enemyCollisionCheck(Controller& controller);
+	bool coinCollsionCheck(Controller& controller);
 
 	bool canMoveRightLeft(Controller& controller, const Location& location);
 	bool canMoveUpDown(Controller& controller, const Location& location);

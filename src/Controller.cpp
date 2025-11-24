@@ -92,7 +92,7 @@ void Controller::run()
 
 void Controller::updateGame()
 {
-	if (!m_player.update(*this))   #
+	if (!m_player.update(*this))   
 		handlePlayerHit();
 
 	for (int i = 0; i < m_enemyList.size(); i++)
@@ -101,7 +101,6 @@ void Controller::updateGame()
 	if (m_board.getCoinsInLevel() == m_player.getCoins())
 		loadNextLevel();
 }
-
 
 void Controller::drawGame()
 {
