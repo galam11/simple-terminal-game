@@ -13,10 +13,13 @@ Board::~Board()
 	m_inputStream.close();
 }
 
-void Board::removeCoin(const Location& location)
+bool Board::removeCoin(const Location& location)
 {
+	if (getAt(location) != COIN)
+		return false;
 	m_BoardData[location.row][location.col] = EMPTY;
-}
+	return true;
+} 
 
 bool Board::loadNext()
 {

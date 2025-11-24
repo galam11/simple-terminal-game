@@ -39,7 +39,7 @@ public:
 	int getHeight() const;
 	int getLevel() const;
 	int getCoinsInLevel() const;
-	void removeCoin(const Location& location);
+	bool removeCoin(const Location& location);
 
 	const Location& getPlayerStartLocation() const;
 	const Location& getEnemyStartLocation(int i) const;

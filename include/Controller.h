@@ -16,8 +16,13 @@ private:
 	std::vector<Enemy> m_enemyList;
 
 	void resetLevel();
-	void nextLevel();
+	void loadNextLevel();
 	void setEntitysStartingLocation();
+	void drawGame();
+	void updateGame();
+
+	void gameOverScreen(bool win);
+
 public:
 	int getWidth() const;
 	int getHeight() const;
@@ -25,10 +30,9 @@ public:
 
 	char getCellAtLocation(const Location& location);
 	bool validLocationInBoard(const Location& location) const;
-
+	bool removeCoin(const Location& location);
 	void run();
-	//void endGame();
-
+	
 	void drawCellAtLocation(char cell, const Location& location);
 	void drawDefaultCell(const Location& location);
 
@@ -39,5 +43,6 @@ public:
 
 	int getNumberOfEnemies();
 
-	void levelSuccess();
+	
+	void handlePlayerHit();
 };

@@ -17,6 +17,7 @@ public:
 	Enemy(const Location& location);
 
 	void move(Controller& controller);
+	void draw(Controller& controller);
 	void setLocation(const Location& location);
 	const Location& getLocation() const;
 };

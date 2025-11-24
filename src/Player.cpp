@@ -29,7 +29,17 @@ const int Player::getLives() const
 
 void Player::updateScore(bool isCoin, const int level)
 {
-	m_score = ((isCoin) ? 2 : 50) * level;
+	m_score += ((isCoin) ? 2 : 50) * level;
+}
+
+int Player::getScore()
+{
+	return m_score;
+}
+
+const int Player::getCoins() const
+{
+	return m_coins;
 }
 
 void Player::resetCoins()
@@ -39,9 +49,9 @@ void Player::resetCoins()
 
 bool Player::coinCollsionCheck(Controller& controller)
 {
-	if (controller.getCellAtLocation(getLocation()) == COIN)
+	if (controller.removeCoin(m_location))
 	{
-		m_coins++;
+		m_coins += 1;
 		updateScore(true, controller.getLevel());
 		return true;
 	}
@@ -82,18 +92,31 @@ void Player::move(Controller& controller)
 		}
 		else continue;
 
-		
-
-		//if (controller.movableLocation(nextLocation))
-		//{ 
-		controller.drawDefaultCell(m_location);
-		controller.drawCellAtLocation(PLAYER, nextLocation);
-
 		setLocation(nextLocation);
+
 		break;
-		//}
 	}
 }
+
+bool Player::update(Controller& controller)
+{
+	if (enemyCollisionCheck(controller))
+		return false;
+
+	move(controller);
+
+	coinCollsionCheck(controller);
+
+	if (enemyCollisionCheck(controller))
+		return false;
+	return true;
+}
+
+void Player::draw(Controller& controller)
+{
+	controller.drawCellAtLocation(PLAYER, m_location);
+}
+
 
 bool Player::canMoveRightLeft(Controller& controller, const Location& location)
 {
@@ -104,7 +127,9 @@ bool Player::canMoveRightLeft(Controller& controller, const Location& location)
 	if (controller.validLocationInBoard(belowLocation))
 	{
 		auto down = controller.getCellAtLocation(belowLocation);
-		if ((down == FLOOR || down == LADDER) && controller.getCellAtLocation(location) != FLOOR)
+		auto mid = controller.getCellAtLocation(location);
+
+		if (( (down == FLOOR || down == LADDER) && mid != FLOOR ) || mid == LADDER)
 			return true;
 	}
 

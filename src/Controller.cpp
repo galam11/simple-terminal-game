@@ -18,13 +18,13 @@ int Controller::getNumberOfEnemies()
 	return m_enemyList.size();
 }
 
-void Controller::nextLevel()
+void Controller::loadNextLevel()
 {
+	m_player.updateScore(false, getLevel());
 	if ((m_running = m_board.loadNext()))
 	{
 		Screen::resetLocation();
 		system("cls");
-		m_board.draw();
 
 		m_enemyList.resize(m_board.getEnemiesCount());
 
@@ -41,9 +41,8 @@ void Controller::setEntitysStartingLocation()
 {
 	Location player_location = m_board.getPlayerStartLocation();
 	m_player.setLocation(player_location);
-	drawCellAtLocation(PLAYER, player_location);
+	m_player.resetCoins();
 
-	
 	for (int i = 0; i < m_enemyList.size(); i++)
 	{
 		m_enemyList[i].setLocation(m_board.getEnemyStartLocation(i));
@@ -77,29 +76,70 @@ int Controller::getLevel() const
 
 void Controller::run()
 {
-	nextLevel();
+	loadNextLevel();
+
+	drawGame();
 
 	while (m_running)
 	{
-		if (m_player.enemyCollisionCheck(*this))
-			resetLevel();
+		updateGame();
+		
+		drawGame();
+	}
 
-		m_player.move(*this);
+	gameOverScreen(true);
+}
 
-		if (m_player.coinCollsionCheck(*this))
-			m_board.removeCoin(m_player.getLocation());
+void Controller::updateGame()
+{
+	if (!m_player.update(*this))   #
+		handlePlayerHit();
 
-		if (m_player.enemyCollisionCheck(*this))
-			resetLevel();
+	for (int i = 0; i < m_enemyList.size(); i++)
+		m_enemyList[i].move(*this);
 
-		for (int i = 0; i < m_enemyList.size(); i++)
-			m_enemyList[i].move(*this);
+	if (m_board.getCoinsInLevel() == m_player.getCoins())
+		loadNextLevel();
+}
+
+
+void Controller::drawGame()
+{
+	Screen::resetLocation();
+
+	m_board.draw();
+
+	m_player.draw(*this);
+
+	for (int i = 0; i < m_enemyList.size(); i++)
+		m_enemyList[i].draw(*this);
+
+	Screen::setLocation(Location(m_board.getHeight(), 0));
+	std::cout << "Lives: " << m_player.getLives() << "  Level: " << getLevel() << "  Score: " << m_player.getScore() <<  std::endl;
+}
+
+void Controller::handlePlayerHit()
+{
+	if (m_player.getLives() == 0)
+	{
+		gameOverScreen(false);
+		exit(EXIT_SUCCESS);
+	}
+	else
+	{
+		resetLevel();
 	}
 }
 
-void Controller::levelSuccess()
+void Controller::gameOverScreen(bool win)
 {
-	
+	Screen::resetLocation();
+	system("cls");
+	std::cout << "Game Over! ," << (win ? "You Won!" : "You Lost!") 
+		<< '\n' << '\t' << " score: " << m_player.getScore() << std::endl;
+
+	std::cout << "\nPress any key to exit..." << std::endl;
+	_getch();
 }
 
 void Controller::drawCellAtLocation(char cell, const Location& location)
@@ -150,4 +190,7 @@ bool Controller::movableLocation(const Location& location) const
 	return false;
 }
 
-
+bool Controller::removeCoin(const Location& location)
+{
+	return m_board.removeCoin(location);
+}

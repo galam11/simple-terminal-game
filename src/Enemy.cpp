@@ -13,16 +13,17 @@ void Enemy::move(Controller& controller)
 
 	if (controller.movableLocation(nextLocation))
 	{
-
-		controller.drawDefaultCell(m_location);
-		controller.drawCellAtLocation(ENEMY, nextLocation);
-		
 		setLocation(nextLocation);
 	}
 	else
 	{
 		m_moveRight = !m_moveRight;
 	}
+}
+
+void Enemy::draw(Controller& controller)
+{
+	controller.drawCellAtLocation(ENEMY, m_location);
 }
 
 void Enemy::setLocation(const Location& location)
