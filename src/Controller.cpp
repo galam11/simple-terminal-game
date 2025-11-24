@@ -29,6 +29,8 @@ void Controller::loadNextLevel()
 		m_enemyList.resize(m_board.getEnemiesCount());
 
 		setEntitysStartingLocation();
+
+		m_player.resetCoins();
 	}
 	else
 	{
@@ -41,8 +43,6 @@ void Controller::setEntitysStartingLocation()
 {
 	Location player_location = m_board.getPlayerStartLocation();
 	m_player.setLocation(player_location);
-	m_player.resetCoins();
-
 	for (int i = 0; i < m_enemyList.size(); i++)
 	{
 		m_enemyList[i].setLocation(m_board.getEnemyStartLocation(i));
@@ -83,7 +83,7 @@ void Controller::run()
 	while (m_running)
 	{
 		updateGame();
-		
+
 		drawGame();
 	}
 
@@ -92,7 +92,7 @@ void Controller::run()
 
 void Controller::updateGame()
 {
-	if (!m_player.update(*this))   
+	if (!m_player.update(*this))
 		handlePlayerHit();
 
 	for (int i = 0; i < m_enemyList.size(); i++)
@@ -114,7 +114,7 @@ void Controller::drawGame()
 		m_enemyList[i].draw(*this);
 
 	Screen::setLocation(Location(m_board.getHeight(), 0));
-	std::cout << "Lives: " << m_player.getLives() << "  Level: " << getLevel() << "  Score: " << m_player.getScore() <<  std::endl;
+	std::cout << "Lives: " << m_player.getLives() << "  Level: " << getLevel() << "  Score: " << m_player.getScore() << std::endl;
 }
 
 void Controller::handlePlayerHit()
@@ -134,11 +134,11 @@ void Controller::gameOverScreen(bool win)
 {
 	Screen::resetLocation();
 	system("cls");
-	std::cout << "Game Over! ," << (win ? "You Won!" : "You Lost!") 
+	std::cout << "Game Over! ," << (win ? "You Won!" : "You Lost!")
 		<< '\n' << '\t' << " score: " << m_player.getScore() << std::endl;
 
-	std::cout << "\nPress any key to exit..." << std::endl;
-	_getch();
+	//std::cout << "\nPress any key to exit..." << std::endl;
+	//_getch();
 }
 
 void Controller::drawCellAtLocation(char cell, const Location& location)
@@ -152,10 +152,9 @@ void Controller::drawDefaultCell(const Location& location)
 	drawCellAtLocation((char)m_board.getAt(location), location);
 }
 
-const Location& Controller::getPlayerLocation() const //what for?
+const Location& Controller::getPlayerLocation() const
 {
-	// TODO: return player location
-	return Location();
+	return m_player.getLocation();
 }
 
 const Location& Controller::getEnemyLocation(int i) const
@@ -175,7 +174,7 @@ bool Controller::movableLocation(const Location& location) const
 
 	if (mid == FLOOR)
 		return false;
-	
+
 
 	auto belowLocation = location.down();
 	if (m_board.LocationInBounds(belowLocation))
