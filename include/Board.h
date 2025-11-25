@@ -32,7 +32,7 @@ public:
 private:
 	int m_level = 0;
 	int m_width = 0, m_levelHeight = 0;
-	std::vector<std::string> m_BoardData;
+	std::vector<std::string> m_boardData;
 	int m_coinsInLevel;
 
 	// Board class has the default locaition of enemies and the player

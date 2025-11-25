@@ -1,42 +1,40 @@
 #pragma once
 #include "Board.h"
 #include "Enemy.h"
-#include <vector>
 #include "Player.h"
-
-class Location;
+#include <vector>
 
 class Controller
 {
 public:
-	Controller() = default;
+    Controller() = default;
+    void run();
 
-	void run();
+    int getWidth() const;
+    int getHeight() const;
+    int getLevel() const;
+    int getNumberOfEnemies() const;
+    char getCellAtLocation(const Location& location) const;
 
-	int getWidth() const;
-	int getHeight() const;
-	int getLevel() const;
-	int getNumberOfEnemies();
-	char getCellAtLocation(const Location& location);
-	const Location& getPlayerLocation() const;
-	const Location& getEnemyLocation(int i) const;
+    const Location& getPlayerLocation() const;
+    const Location& getEnemyLocation(int i) const;
 
-	bool validLocationInBoard(const Location& location) const;
-	bool removeCoin(const Location& location);
-	void drawCellAtLocation(char cell, const Location& location);
-	
+    bool validLocationInBoard(const Location& location) const;
+
+    bool removeCoin(const Location& location);
+    void drawCellAtLocation(char cell, const Location& location) const;
+
 private:
-	bool m_running = true;
-	Board m_board;
-	Player m_player; 
-	std::vector<Enemy> m_enemyList;
+    bool m_running = true;
+    Board m_board;
+    Player m_player;
+    std::vector<Enemy> m_enemyList;
 
-	void resetLevel();
-	void loadNextLevel();
-	void setEntitysStartingLocation();
-	void drawGame();
-	void updateGame();
-	void gameOverScreen(bool win);
-	void handlePlayerHit();
-
+    void resetLevel();
+    void loadNextLevel();
+    void setEntitiesStartingLocation();
+    void drawGame() const;
+    void updateGame();
+    void gameOverScreen(bool win) const;
+    void handlePlayerHit();
 };

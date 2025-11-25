@@ -6,214 +6,190 @@
 #include <cstdlib>
 
 Enemy::Enemy(const Location& location)
-	: m_location(location) {
-}
-
-void Enemy::move(Controller& controller)
+    : m_location(location)
 {
-	// 30% chance to make a random move instead of a smart one.
-	if (std::rand() % 100 < 30)
-	{
-		moveRandomly(controller);
-		return;
-	}
-
-	calculatePathToPlayer(controller);
-
-	if (!m_path.empty())
-	{
-		Location nextStep = m_path.front();
-
-
-		setLocation(nextStep);
-		
-
-		m_path.clear();
-	}
-}
-
-void Enemy::moveRandomly(Controller& controller)
-{
-	std::vector<Location> validMoves;
-
-	Location neighbors[] = {
-		m_location.up(),
-		m_location.down(),
-		m_location.left(),
-		m_location.right()
-	};
-
-	for (int i = 0; i < 4; i++)
-	{
-		Location neighbor = neighbors[i];
-
-		if (isValidMove(controller, m_location, neighbor))
-		{
-			validMoves.push_back(neighbor);
-		}
-	}
-
-	if (!validMoves.empty())
-	{
-		int randomIndex = std::rand() % validMoves.size();
-		setLocation(validMoves[randomIndex]);
-
-		m_path.clear();
-	}
-}
-
-void Enemy::draw(Controller& controller)
-{
-	controller.drawCellAtLocation(ENEMY, m_location);
 }
 
 void Enemy::setLocation(const Location& location)
 {
-	m_location = location;
+    m_location = location;
 }
 
 const Location& Enemy::getLocation() const
 {
-	return m_location;
+    return m_location;
 }
 
-// --- Pathfinding Logic ---
-
-bool Enemy::isValidMove(Controller& controller, const Location& from, const Location& to)
+void Enemy::draw(const Controller& controller) const
 {
-	if (!controller.validLocationInBoard(to))
-		return false;
-
-	bool isVertical = (from.col == to.col);
-	bool isHorizontal = (from.row == to.row);
-
-	char currentCell = controller.getCellAtLocation(from);
-	char targetCell = controller.getCellAtLocation(to);
-
-	if (isVertical)
-	{
-		return (currentCell == LADDER && targetCell == LADDER);
-	}
-
-	if (isHorizontal)
-	{
-		if (targetCell == FLOOR) return false;
-
-		Location belowTarget = to.down();
-		if (controller.validLocationInBoard(belowTarget))
-		{
-			char cellBelow = controller.getCellAtLocation(belowTarget);
-
-			if (targetCell == LADDER || targetCell == RAIL || cellBelow == FLOOR || cellBelow == LADDER)
-			{
-				return true;
-			}
-		}
-	}
-
-	return false;
+    controller.drawCellAtLocation(ENEMY, m_location);
 }
 
-void Enemy::calculatePathToPlayer(Controller& controller)
+void Enemy::move(const Controller& controller)
 {
-	Location start = m_location;
-	Location goal = controller.getPlayerLocation();
+    if (std::rand() % 100 < 30)
+    {
+        moveRandom(controller);
+    }
+    else
+    {
+        moveSmart(controller);
+    }
+}
 
-	if (start == goal) return;
+void Enemy::moveSmart(const Controller& controller)
+{
+    Location goal = controller.getPlayerLocation();
+    std::vector<Location> path = findPathAStar(controller, m_location, goal);
 
-	int height = controller.getHeight();
-	int width = controller.getWidth();
+    if (!path.empty())
+    {
+        setLocation(path.front());
+    }
+}
 
-	const double INF_COST = 999999.0;
+void Enemy::moveRandom(const Controller& controller)
+{
+    std::vector<Location> neighbors = getValidNeighbors(controller, m_location);
 
-	std::vector<std::vector<double>> gScore(height, std::vector<double>(width, INF_COST));
-	std::vector<std::vector<Location>> cameFrom(height, std::vector<Location>(width, Location( - 1, -1 )));
-	std::vector<Location> openSet;
+    if (!neighbors.empty())
+    {
+        int randomIndex = std::rand() % (int)neighbors.size();
+        setLocation(neighbors[randomIndex]);
+    }
+}
 
-	gScore[start.row][start.col] = 0;
-	openSet.push_back(start);
+std::vector<Location> Enemy::findPathAStar(const Controller& controller, const Location& start, const Location& goal) const
+{
+    if (start == goal) return {};
 
-	while (!openSet.empty())
-	{
-		int bestNodeIndex = 0;
-		double minF = INF_COST;
+    int height = controller.getHeight();
+    int width = controller.getWidth();
+    const double INF = 999999.0;
 
-		for (int i = 0; i < openSet.size(); ++i)
-		{
-			Location loc = openSet[i];
+    std::vector<std::vector<double>> gScore(height, std::vector<double>(width, INF));
+    std::vector<std::vector<Location>> cameFrom(height, std::vector<Location>(width, { -1, -1 }));
+    std::vector<Location> openSet;
 
-			double g = gScore[loc.row][loc.col];
-			double h = std::abs(loc.row - goal.row) + std::abs(loc.col - goal.col);
-			double f = g + h;
+    gScore[start.row][start.col] = 0;
+    openSet.push_back(start);
 
-			if (f < minF)
-			{
-				minF = f;
-				bestNodeIndex = i;
-			}
-		}
+    while (!openSet.empty())
+    {
+        int bestIndex = -1;
+        double minF = INF;
 
-		Location current = openSet[bestNodeIndex];
+        for (int i = 0; i < (int)openSet.size(); ++i)
+        {
+            Location node = openSet[i];
+            double f = gScore[node.row][node.col] + estimatedDistance(node, goal);
 
-		openSet[bestNodeIndex] = openSet.back();
-		openSet.pop_back();
+            if (f < minF)
+            {
+                minF = f;
+                bestIndex = i;
+            }
+        }
 
-		if (current == goal)
-		{
-			m_path.clear();
-			Location curr = goal;
-			while (!(curr == start))
-			{
-				m_path.push_back(curr);
-				curr = cameFrom[curr.row][curr.col];
-			}
+        if (bestIndex == -1) break;
 
-			int n = m_path.size();
-			for (int i = 0; i < n / 2; ++i)
-			{
-				Location temp = m_path[i];
-				m_path[i] = m_path[n - 1 - i];
-				m_path[n - 1 - i] = temp;
-			}
+        Location current = openSet[bestIndex];
 
-			return;
-		}
+        if (current == goal)
+        {
+            std::vector<Location> path;
+            Location curr = goal;
+            while (!(curr == start))
+            {
+                path.push_back(curr);
+                curr = cameFrom[curr.row][curr.col];
+            }
 
-		Location neighbors[4];
-		neighbors[0] = current.up();
-		neighbors[1] = current.down();
-		neighbors[2] = current.left();
-		neighbors[3] = current.right();
+            int n = (int)path.size();
+            for (int i = 0; i < n / 2; ++i)
+            {
+                Location temp = path[i];
+                path[i] = path[n - 1 - i];
+                path[n - 1 - i] = temp;
+            }
 
-		for (int i = 0; i < 4; ++i)
-		{
-			Location neighbor = neighbors[i];
+            return path;
+        }
 
-			if (isValidMove(controller, current, neighbor))
-			{
-				double newG = gScore[current.row][current.col] + 1;
+        openSet.erase(openSet.begin() + bestIndex);
 
-				if (newG < gScore[neighbor.row][neighbor.col])
-				{
-					cameFrom[neighbor.row][neighbor.col] = current;
-					gScore[neighbor.row][neighbor.col] = newG;
+        std::vector<Location> neighbors = getValidNeighbors(controller, current);
 
-					bool inOpenSet = false;
-					for (int j = 0; j < openSet.size(); ++j)
-					{
-						if (openSet[j] == neighbor)
-						{
-							inOpenSet = true;
-							break;
-						}
-					}
+        for (int i = 0; i < (int)neighbors.size(); ++i)
+        {
+            Location neighbor = neighbors[i];
+            double tentativeG = gScore[current.row][current.col] + 1;
 
-					if (!inOpenSet)
-					{
-						openSet.push_back(neighbor);
-					}
-				}
-			}
-		}
-	}
+            if (tentativeG < gScore[neighbor.row][neighbor.col])
+            {
+                cameFrom[neighbor.row][neighbor.col] = current;
+                gScore[neighbor.row][neighbor.col] = tentativeG;
+
+                bool inOpenSet = false;
+                for (int j = 0; j < (int)openSet.size(); ++j)
+                {
+                    if (openSet[j] == neighbor)
+                    {
+                        inOpenSet = true;
+                        break;
+                    }
+                }
+
+                if (!inOpenSet)
+                {
+                    openSet.push_back(neighbor);
+                }
+            }
+        }
+    }
+    return {};
+}
+
+std::vector<Location> Enemy::getValidNeighbors(const Controller& controller, const Location& current) const
+{
+    std::vector<Location> neighbors;
+    Location directions[] = { current.up(), current.down(), current.left(), current.right() };
+
+    for (int i = 0; i < 4; ++i)
+    {
+        Location dir = directions[i];
+        if (isValidMove(controller, current, dir))
+        {
+            neighbors.push_back(dir);
+        }
+    }
+    return neighbors;
+}
+
+bool Enemy::isValidMove(const Controller& controller, const Location& from, const Location& to) const
+{
+    if (!controller.validLocationInBoard(to)) return false;
+
+    char currentCell = controller.getCellAtLocation(from);
+    char targetCell = controller.getCellAtLocation(to);
+    bool isVertical = (from.col == to.col);
+
+    if (isVertical) return (currentCell == LADDER && targetCell == LADDER);
+    if (targetCell == FLOOR) return false;
+
+    Location belowTarget = to.down();
+    if (controller.validLocationInBoard(belowTarget))
+    {
+        char cellBelow = controller.getCellAtLocation(belowTarget);
+        if (targetCell == LADDER || targetCell == RAIL || cellBelow == FLOOR || cellBelow == LADDER)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+double Enemy::estimatedDistance(const Location& a, const Location& b) const
+{
+    return std::abs(a.row - b.row) + std::abs(a.col - b.col);
 }

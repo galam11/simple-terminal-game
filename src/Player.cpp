@@ -1,155 +1,126 @@
 #include "Player.h"
 #include "Controller.h"
-#include <iostream>
-#include "conio.h"
 #include "io.h"
+#include <conio.h> 
 
-Player::Player(const Location& location)
-	: m_location(location) { }
+Player::Player(const Location& location) : m_location(location) {}
 
-void Player::setLocation(const Location& location)
+void Player::setLocation(const Location& location) { m_location = location; }
+const Location& Player::getLocation() const { return m_location; }
+int Player::getLives() const { return m_lives; }
+int Player::getScore() const { return m_score; }
+int Player::getCoins() const { return m_coins; }
+
+void Player::updateScore(bool isCoin, int level)
 {
-	m_location = location;
+    m_score += ((isCoin) ? COIN_SCORE : LEVEL_WON_SCORE) * level;
 }
 
-const Location& Player::getLocation() const
-{
-	return m_location;
-}
-
-const int Player::getLives() const
-{
-	return m_lives;
-}
-
-void Player::updateScore(bool isCoin, const int level)
-{
-	m_score += ((isCoin) ? COIN_SCORE : LEVEL_UP_SCORE) * level;
-}
-
-int Player::getScore()
-{
-	return m_score;
-}
-
-const int Player::getCoins() const
-{
-	return m_coins;
-}
-
-void Player::resetCoins()
-{
-	m_coins = 0;
-}
-
-bool Player::coinCollsionCheck(Controller& controller)
-{
-	if (controller.removeCoin(m_location))
-	{
-		m_coins += 1;
-		updateScore(true, controller.getLevel());
-		return true;
-	}
-	return false;
-}
-
-void Player::move(Controller& controller)
-{
-	while (true) {
-
-		Location nextLocation = Location(0, 0);
-		
-		int input = _getch();
-
-		//why not switch case?
-		// todo : add spacebar for turn skip
-
-		if (input == SpecialKeys::RIGHT)
-		{
-			nextLocation = m_location.right();
-			if (!canMoveRightLeft(controller, nextLocation))
-				continue;
-		}
-		else if (input == SpecialKeys::LEFT)
-		{
-			nextLocation = m_location.left();
-			if (!canMoveRightLeft(controller, nextLocation))
-				continue;
-		}
-		else if (input == SpecialKeys::DOWN)
-		{
-			nextLocation = m_location.down();
-			if (!canMoveUpDown(controller, nextLocation))
-				continue;
-		}
-		else if (input == SpecialKeys::UP)
-		{
-			nextLocation = m_location.up();
-			if (!canMoveUpDown(controller, nextLocation))
-				continue;
-		}
-		else continue;
-
-		setLocation(nextLocation);
-
-		break;
-	}
-}
+void Player::resetCoins() { m_coins = 0; }
 
 bool Player::update(Controller& controller)
 {
-	if (enemyCollisionCheck(controller))
-		return false;
+    if (checkEnemyCollision(controller)) 
+        return false;
 
-	move(controller);
+    handleInputAndMove(controller);
+    checkCoinCollision(controller);
 
-	coinCollsionCheck(controller);
+    if (checkEnemyCollision(controller)) 
+        return false;
 
-	if (enemyCollisionCheck(controller))
-		return false;
-	return true;
+    return true;
 }
 
-void Player::draw(Controller& controller)
+void Player::draw(const Controller& controller) const
 {
-	controller.drawCellAtLocation(PLAYER, m_location);
+    controller.drawCellAtLocation(PLAYER, m_location);
 }
 
-
-bool Player::canMoveRightLeft(Controller& controller, const Location& location)
+void Player::handleInputAndMove(const Controller& controller)
 {
-	if (!controller.validLocationInBoard(location))
-		return false;
+    while (true)
+    {
+        int input = _getch();
+        if (input == Keys::SPECIAL_KEY || input == 0)
+            input = _getch();
 
-	auto belowLocation = location.down();
-	if (controller.validLocationInBoard(belowLocation))
-	{
-		auto down = controller.getCellAtLocation(belowLocation);
-		auto mid = controller.getCellAtLocation(location);
+        Location nextLocation = m_location;
 
-		if (( (down == FLOOR || down == LADDER) && mid != FLOOR ) || mid == LADDER)
-			return true;
-	}
+        switch (input)
+        {
+        case SpecialKeys::RIGHT:
+            nextLocation = m_location.right();
+            if (!canMoveHorizontal(controller, nextLocation)) continue;
+            break;
+        case SpecialKeys::LEFT:
+            nextLocation = m_location.left();
+            if (!canMoveHorizontal(controller, nextLocation)) continue;
+            break;
+        case SpecialKeys::DOWN:
+            nextLocation = m_location.down();
+            if (!canMoveVertical(controller, nextLocation)) continue;
+            break;
+        case SpecialKeys::UP:
+            nextLocation = m_location.up();
+            if (!canMoveVertical(controller, nextLocation)) continue;
+            break;
+        case Keys::SPECIAL_KEY:
+            break;
+        default:
+            continue;
+        }
 
-	return controller.getCellAtLocation(location) == RAIL;
+        setLocation(nextLocation);
+        break;
+    }
 }
 
-bool Player::canMoveUpDown(Controller& controller, const Location& location)
+bool Player::canMoveHorizontal(const Controller& controller, const Location& location) const
 {
-	return controller.validLocationInBoard(location) 
-		&& controller.getCellAtLocation(location) == LADDER
-		&& controller.getCellAtLocation(m_location) == LADDER;
+    if (!controller.validLocationInBoard(location)) 
+        return false;
+
+    Location below = location.down();
+    if (controller.validLocationInBoard(below))
+    {
+        char cellBelow = controller.getCellAtLocation(below);
+        char currentCell = controller.getCellAtLocation(location);
+
+        if (((cellBelow == FLOOR || cellBelow == LADDER) && currentCell != FLOOR) || currentCell == LADDER)
+            return true;
+    }
+
+    return controller.getCellAtLocation(location) == RAIL;
 }
 
-bool Player::enemyCollisionCheck(Controller& controller)
+bool Player::canMoveVertical(const Controller& controller, const Location& location) const
 {
-	for (int i = 0; i < controller.getNumberOfEnemies(); i++)
-	{
-		if (getLocation() == controller.getEnemyLocation(i))
-		{
-			m_lives--;
-			return true;
-		}
-	}
-	return false;
+    return controller.validLocationInBoard(location)
+        && controller.getCellAtLocation(location) == LADDER
+        && controller.getCellAtLocation(m_location) == LADDER;
+}
+
+bool Player::checkEnemyCollision(const Controller& controller)
+{
+    for (int i = 0; i < controller.getNumberOfEnemies(); i++)
+    {
+        if (m_location == controller.getEnemyLocation(i))
+        {
+            m_lives--;
+            return true;
+        }
+    }
+    return false;
+}
+
+bool Player::checkCoinCollision(Controller& controller)
+{
+    if (controller.removeCoin(m_location))
+    {
+        m_coins++;
+        updateScore(true, controller.getLevel());
+        return true;
+    }
+    return false;
 }
