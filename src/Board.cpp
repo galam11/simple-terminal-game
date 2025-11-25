@@ -87,9 +87,15 @@ char Board::getAt(const Location& location) const
 }
 
 int Board::getWidth() const { return m_width; }
+
 int Board::getHeight() const { return m_levelHeight; }
+
 int Board::getLevel() const { return m_level; }
+
 const Location& Board::getPlayerStartLocation() const { return m_playerStartLocation; }
+
 const Location& Board::getEnemyStartLocation(int i) const { return m_enemiesStartLocations[i]; }
+
 int Board::getEnemiesCount() const { return (int)m_enemiesStartLocations.size(); }
+
 int Board::getCoinsInLevel() const { return m_coinsInLevel; }

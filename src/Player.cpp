@@ -6,11 +6,6 @@
 
 Player::Player(const Location& location) : m_location(location) {}
 
-void Player::setLocation(const Location& location) { m_location = location; }
-const Location& Player::getLocation() const { return m_location; }
-int Player::getLives() const { return m_lives; }
-int Player::getScore() const { return m_score; }
-int Player::getCoins() const { return m_coins; }
 
 void Player::updateScore(bool isCoin, int level)
 {
@@ -124,3 +119,13 @@ bool Player::checkCoinCollision(Controller& controller)
     }
     return false;
 }
+
+void Player::setLocation(const Location& location) { m_location = location; }
+
+const Location& Player::getLocation() const { return m_location; }
+
+int Player::getLives() const { return m_lives; }
+
+int Player::getScore() const { return m_score; }
+
+int Player::getCoins() const { return m_coins; }

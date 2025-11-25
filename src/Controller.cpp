@@ -125,5 +125,3 @@ const Location& Controller::getEnemyLocation(int i) const { return m_enemyList[i
 bool Controller::validLocationInBoard(const Location& location) const { return m_board.LocationInBounds(location); }
 
 bool Controller::removeCoin(const Location& location) { return m_board.removeCoin(location); }
-
-
