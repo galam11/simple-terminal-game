@@ -66,7 +66,11 @@ char Controller::getCellAtLocation(const Location& location)
 
 bool Controller::validLocationInBoard(const Location& location) const
 {
-	return m_board.LocationInBounds(location);
+	return 
+		location.col < getWidth()
+		&& location.col >= 0
+		&& location.row < getHeight()
+		&& location.row >= 0;
 }
 
 int Controller::getLevel() const
@@ -108,10 +112,10 @@ void Controller::drawGame()
 
 	m_board.draw();
 
-	m_player.draw(*this);
+	m_player.draw();
 
 	for (int i = 0; i < m_enemyList.size(); i++)
-		m_enemyList[i].draw(*this);
+		m_enemyList[i].draw();
 
 	Screen::setLocation(Location(m_board.getHeight(), 0));
 	std::cout << "Lives: " << m_player.getLives() << "  Level: " << getLevel() << "  Score: " << m_player.getScore() << std::endl;
@@ -138,12 +142,6 @@ void Controller::gameOverScreen(bool win)
 		<< '\n' << '\t' << " score: " << m_player.getScore() << std::endl;
 }
 
-void Controller::drawCellAtLocation(char cell, const Location& location)
-{
-	Screen::setLocation(location);
-	std::cout << (char)cell;
-}
-
 const Location& Controller::getPlayerLocation() const
 {
 	return m_player.getLocation();
@@ -156,5 +154,8 @@ const Location& Controller::getEnemyLocation(int i) const
 
 bool Controller::removeCoin(const Location& location)
 {
-	return m_board.removeCoin(location);
+	if (m_board.getAt(location) != COIN)
+		return false;
+	m_board.SetAt(location, EMPTY);
+	return true;
 }

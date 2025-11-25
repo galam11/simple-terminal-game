@@ -13,12 +13,9 @@ Board::~Board()
 	m_inputStream.close();
 }
 
-bool Board::removeCoin(const Location& location)
+void Board::SetAt(const Location& location, char val)
 {
-	if (getAt(location) != COIN)
-		return false;
-	m_BoardData[location.row][location.col] = EMPTY;
-	return true;
+	m_boardData[location.row][location.col] = val;
 } 
 
 bool Board::loadNext()
@@ -33,14 +30,14 @@ bool Board::loadNext()
 
 	m_levelHeight = std::stoi(buffer);
 
-	m_BoardData.clear();
+	m_boardData.clear();
 
 	for (int i = 0; i < m_levelHeight; i++) 
 	{
 		std::getline(m_inputStream, buffer);
-		m_BoardData.push_back(buffer);
+		m_boardData.push_back(buffer);
 	}
-	m_width = m_BoardData[0].length();
+	m_width = m_boardData[0].length();
 	saveEntityState();
 
 	return true;
@@ -53,7 +50,7 @@ void Board::saveEntityState()
 	for (int i = 0; i < m_levelHeight; i++)
 		for (int j = 0; j < m_width; j++)
 		{
-			char& charAt = m_BoardData[i][j];
+			char& charAt = m_boardData[i][j];
 			switch (charAt) {
 			case ENEMY:
 				charAt = EMPTY;
@@ -65,6 +62,7 @@ void Board::saveEntityState()
 				break;
 			case COIN:
 				m_coinsInLevel++;
+				break;
 			default:
 				break;
 			}
@@ -72,26 +70,15 @@ void Board::saveEntityState()
 }
 
 
-
 void Board::draw() const
 {
 	for (int i = 0; i < m_levelHeight; i++)
-		std::cout << m_BoardData[i] << '\n';
-}
-
-bool Board::LocationInBounds(const Location& location) const
-{
-	return 
-		location.col < getWidth()
-		&& location.col >= 0 
-		&& location.row < getHeight() 
-		&& location.row >= 0;
-
+		std::cout << m_boardData[i] << '\n';
 }
 
 char Board::getAt(const Location& location) const
 {
-	return m_BoardData[location.row][location.col];
+	return m_boardData[location.row][location.col];
 }
 
 int Board::getWidth() const

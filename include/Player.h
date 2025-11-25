@@ -12,22 +12,20 @@ public:
 	Player(const Location& location);
 
 	bool update(Controller& controller);
-	void draw(Controller& controller);
+	void draw() const;
 	
 	void setLocation(const Location& location);
-	const Location& getLocation() const;
 	
-	const int getLives() const;
+	const Location& getLocation() const;
+	int getLives() const;
+	int getCoins() const;
+	int getScore() const;
 
 	void updateScore(bool isCoin, const int level);
-	int getScore();
-
 	void resetCoins();
-	const int getCoins() const;
 
 
 private:
-
 	void move(Controller& controller);
 	bool enemyCollisionCheck(Controller& controller);
 	bool coinCollsionCheck(Controller& controller);

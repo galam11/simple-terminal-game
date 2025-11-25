@@ -17,7 +17,7 @@ const Location& Player::getLocation() const
 	return m_location;
 }
 
-const int Player::getLives() const
+int Player::getLives() const
 {
 	return m_lives;
 }
@@ -27,12 +27,12 @@ void Player::updateScore(bool isCoin, const int level)
 	m_score += ((isCoin) ? COIN_SCORE : LEVEL_UP_SCORE) * level;
 }
 
-int Player::getScore()
+int Player::getScore() const
 {
 	return m_score;
 }
 
-const int Player::getCoins() const
+int Player::getCoins() const
 {
 	return m_coins;
 }
@@ -116,9 +116,10 @@ bool Player::update(Controller& controller)
 	return true;
 }
 
-void Player::draw(Controller& controller)
+void Player::draw() const
 {
-	controller.drawCellAtLocation(PLAYER, m_location);
+	Screen::setLocation(m_location);
+	std::cout << PLAYER;
 }
 
 

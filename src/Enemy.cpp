@@ -1,5 +1,6 @@
 #include "Enemy.h"
 #include "Controller.h"
+#include "io.h"
 #include <iostream>
 #include <vector>
 #include <cmath>
@@ -62,9 +63,10 @@ void Enemy::moveRandomly(Controller& controller)
 	}
 }
 
-void Enemy::draw(Controller& controller)
+void Enemy::draw() const
 {
-	controller.drawCellAtLocation(ENEMY, m_location);
+	Screen::setLocation(m_location);
+	std::cout << ENEMY;
 }
 
 void Enemy::setLocation(const Location& location)
