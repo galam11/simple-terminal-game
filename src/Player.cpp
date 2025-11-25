@@ -61,36 +61,40 @@ void Player::move(Controller& controller)
 		
 		int input = _getch();
 
-		//why not switch case?
-
-		if (input == SpecialKeys::RIGHT)
+		switch (input)
 		{
+
+		case SpecialKeys::RIGHT:
 			nextLocation = m_location.right();
 			if (!canMoveRightLeft(controller, nextLocation))
 				continue;
-		}
-		else if (input == SpecialKeys::LEFT)
-		{
+			break;
+			
+		case SpecialKeys::LEFT:
 			nextLocation = m_location.left();
 			if (!canMoveRightLeft(controller, nextLocation))
 				continue;
-		}
-		else if (input == SpecialKeys::DOWN)
-		{
+			break;
+
+		case SpecialKeys::DOWN:
 			nextLocation = m_location.down();
 			if (!canMoveUpDown(controller, nextLocation))
 				continue;
-		}
-		else if (input == SpecialKeys::UP)
-		{
+			break;
+			
+		case SpecialKeys::UP:
 			nextLocation = m_location.up();
 			if (!canMoveUpDown(controller, nextLocation))
 				continue;
-		}
-		else if (input == SPACE_BAR)
 			break;
 
-		else continue;
+		case SPACE_BAR:
+			return;
+		break;
+
+		default:
+			continue;
+		}
 
 		setLocation(nextLocation);
 
