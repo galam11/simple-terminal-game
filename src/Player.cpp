@@ -62,7 +62,6 @@ void Player::move(Controller& controller)
 		int input = _getch();
 
 		//why not switch case?
-		// todo : add spacebar for turn skip
 
 		if (input == SpecialKeys::RIGHT)
 		{
@@ -88,6 +87,9 @@ void Player::move(Controller& controller)
 			if (!canMoveUpDown(controller, nextLocation))
 				continue;
 		}
+		else if (input == SPACE_BAR)
+			break;
+
 		else continue;
 
 		setLocation(nextLocation);
