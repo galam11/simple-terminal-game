@@ -23,15 +23,11 @@ public:
 
 	bool validLocationInBoard(const Location& location) const;
 	bool removeCoin(const Location& location);
-	bool movableLocation(const Location& location) const;
-
 	void drawCellAtLocation(char cell, const Location& location);
-	void drawDefaultCell(const Location& location);
 	
 private:
-	Board m_board;
 	bool m_running = true;
-
+	Board m_board;
 	Player m_player; 
 	std::vector<Enemy> m_enemyList;
 

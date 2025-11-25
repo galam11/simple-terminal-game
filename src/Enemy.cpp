@@ -24,10 +24,9 @@ void Enemy::move(Controller& controller)
 	{
 		Location nextStep = m_path.front();
 
-		if (controller.movableLocation(nextStep))
-		{
-			setLocation(nextStep);
-		}
+
+		setLocation(nextStep);
+		
 
 		m_path.clear();
 	}
@@ -128,7 +127,7 @@ void Enemy::calculatePathToPlayer(Controller& controller)
 	const double INF_COST = 999999.0;
 
 	std::vector<std::vector<double>> gScore(height, std::vector<double>(width, INF_COST));
-	std::vector<std::vector<Location>> cameFrom(height, std::vector<Location>(width, Location{ -1, -1 }));
+	std::vector<std::vector<Location>> cameFrom(height, std::vector<Location>(width, Location( - 1, -1 )));
 	std::vector<Location> openSet;
 
 	gScore[start.row][start.col] = 0;

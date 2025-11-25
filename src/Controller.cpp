@@ -136,20 +136,12 @@ void Controller::gameOverScreen(bool win)
 	system("cls");
 	std::cout << "Game Over! ," << (win ? "You Won!" : "You Lost!")
 		<< '\n' << '\t' << " score: " << m_player.getScore() << std::endl;
-
-	//std::cout << "\nPress any key to exit..." << std::endl;
-	//_getch();
 }
 
 void Controller::drawCellAtLocation(char cell, const Location& location)
 {
 	Screen::setLocation(location);
 	std::cout << (char)cell;
-}
-
-void Controller::drawDefaultCell(const Location& location)
-{
-	drawCellAtLocation((char)m_board.getAt(location), location);
 }
 
 const Location& Controller::getPlayerLocation() const
@@ -160,32 +152,6 @@ const Location& Controller::getPlayerLocation() const
 const Location& Controller::getEnemyLocation(int i) const
 {
 	return m_enemyList[i].getLocation();
-}
-
-bool Controller::movableLocation(const Location& location) const
-{
-	if (!m_board.LocationInBounds(location))
-		return false;
-
-	auto mid = m_board.getAt(location);
-
-	if (mid == LADDER || mid == RAIL)
-		return true;
-
-	if (mid == FLOOR)
-		return false;
-
-
-	auto belowLocation = location.down();
-	if (m_board.LocationInBounds(belowLocation))
-	{
-		char down = m_board.getAt(belowLocation);
-
-		if (down == FLOOR)
-			return true;
-	}
-
-	return false;
 }
 
 bool Controller::removeCoin(const Location& location)
