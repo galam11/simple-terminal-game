@@ -17,6 +17,8 @@ public:
 	void draw() const;
 
 	char getAt(const Location& location) const;
+	void SetAt(const Location& location, char val);
+
 	int getWidth() const;
 	int getHeight() const;
 	int getLevel() const;
@@ -25,9 +27,6 @@ public:
 
 	const Location& getPlayerStartLocation() const;
 	const Location& getEnemyStartLocation(int i) const;
-
-	bool removeCoin(const Location& location);
-	bool LocationInBounds(const Location& location) const;
 
 private:
 	int m_level = 0;

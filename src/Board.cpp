@@ -11,7 +11,7 @@ Board::~Board()
     m_inputStream.close();
 }
 
-bool Board::removeCoin(const Location& location)
+void Board::SetAt(const Location& location, char val)
 {
     if (getAt(location) != COIN)
         return false;
