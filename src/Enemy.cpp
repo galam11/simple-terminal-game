@@ -45,7 +45,7 @@ void Enemy::moveSmart(const Controller& controller)
 {
     Location goal = controller.getPlayerLocation();
 
-    // Calculate full path locally
+    // Calculate full path
     std::vector<Location> path = findPathAStar(controller, m_location, goal);
 
     // Move to the next step if a path exists
