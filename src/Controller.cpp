@@ -33,11 +33,11 @@ void Controller::drawGame() const
 {
     Screen::resetLocation();
     m_board.draw();
-    m_player.draw(*this);
+    m_player.draw();
 
     for (int i = 0; i < (int)m_enemyList.size(); ++i)
     {
-        m_enemyList[i].draw(*this);
+        m_enemyList[i].draw();
     }
 
     Screen::setLocation(Location(m_board.getHeight(), 0));
@@ -109,17 +109,21 @@ void Controller::gameOverScreen(bool win) const
 // --- Passthrough Helpers ---
 
 int Controller::getWidth() const { return m_board.getWidth(); }
+
 int Controller::getHeight() const { return m_board.getHeight(); }
+
 int Controller::getLevel() const { return m_board.getLevel(); }
+
 int Controller::getNumberOfEnemies() const { return (int)m_enemyList.size(); }
+
 char Controller::getCellAtLocation(const Location& location) const { return m_board.getAt(location); }
+
 const Location& Controller::getPlayerLocation() const { return m_player.getLocation(); }
+
 const Location& Controller::getEnemyLocation(int i) const { return m_enemyList[i].getLocation(); }
+
 bool Controller::validLocationInBoard(const Location& location) const { return m_board.LocationInBounds(location); }
+
 bool Controller::removeCoin(const Location& location) { return m_board.removeCoin(location); }
 
-void Controller::drawCellAtLocation(char cell, const Location& location) const
-{
-    Screen::setLocation(location);
-    std::cout << cell;
-}
+

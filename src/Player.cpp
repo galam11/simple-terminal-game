@@ -1,6 +1,7 @@
 #include "Player.h"
 #include "Controller.h"
 #include "io.h"
+#include <iostream>
 #include <conio.h> 
 
 Player::Player(const Location& location) : m_location(location) {}
@@ -30,9 +31,10 @@ bool Player::update(Controller& controller)
     return true;
 }
 
-void Player::draw(const Controller& controller) const
+void Player::draw() const
 {
-    controller.drawCellAtLocation(PLAYER, m_location);
+	Screen::setLocation(m_location);
+	std::cout << PLAYER;
 }
 
 void Player::handleInputAndMove(const Controller& controller)

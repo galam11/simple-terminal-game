@@ -11,7 +11,7 @@ public:
 
     void move(const Controller& controller);
 
-    void draw(const Controller& controller) const;
+    void draw() const;
     void setLocation(const Location& location);
     const Location& getLocation() const;
 

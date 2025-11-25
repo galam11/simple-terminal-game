@@ -1,6 +1,8 @@
 #include "Enemy.h"
 #include "Controller.h"
+#include "io.h"
 #include <iostream>
+
 #include <vector>
 #include <cmath>
 #include <cstdlib>
@@ -20,9 +22,10 @@ const Location& Enemy::getLocation() const
     return m_location;
 }
 
-void Enemy::draw(const Controller& controller) const
+void Enemy::draw() const
 {
-    controller.drawCellAtLocation(ENEMY, m_location);
+	Screen::setLocation(m_location);
+	std::cout << ENEMY;
 }
 
 void Enemy::move(const Controller& controller)

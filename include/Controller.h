@@ -22,7 +22,7 @@ public:
     bool validLocationInBoard(const Location& location) const;
 
     bool removeCoin(const Location& location);
-    void drawCellAtLocation(char cell, const Location& location) const;
+
 
 private:
     bool m_running = true;
