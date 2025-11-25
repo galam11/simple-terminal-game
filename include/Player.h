@@ -24,14 +24,13 @@ public:
     void updateScore(bool isCoin, int level);
     void resetCoins();
 
-
+private:
     void handleInputAndMove(const Controller& controller);
     bool checkEnemyCollision(const Controller& controller);
     bool checkCoinCollision(Controller& controller);
 
     bool canMoveHorizontal(const Controller& controller, const Location& location) const;
     bool canMoveVertical(const Controller& controller, const Location& location) const;
-	bool canMoveUpDown(Controller& controller, const Location& location);
 
     Location m_location = { 0, 0 };
     int m_lives = LIVES;

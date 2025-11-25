@@ -11,7 +11,7 @@ Board::~Board()
     m_inputStream.close();
 }
 
-void Board::SetAt(const Location& location, char val)
+bool Board::removeCoin(const Location& location)
 {
     if (getAt(location) != COIN)
         return false;
@@ -35,7 +35,7 @@ bool Board::loadNext()
         std::getline(m_inputStream, buffer);
         m_boardData.push_back(buffer);
     }
-    m_width = m_boardData[0].length();
+    m_width = (int)m_boardData[0].length();
     saveEntityState();
 
     return true;

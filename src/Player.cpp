@@ -20,14 +20,12 @@ void Player::resetCoins() { m_coins = 0; }
 
 bool Player::update(Controller& controller)
 {
-    if (checkEnemyCollision(controller)) 
-        return false;
+    if (checkEnemyCollision(controller)) return false;
 
     handleInputAndMove(controller);
     checkCoinCollision(controller);
 
-    if (checkEnemyCollision(controller)) 
-        return false;
+    if (checkEnemyCollision(controller)) return false;
 
     return true;
 }
@@ -65,21 +63,20 @@ void Player::handleInputAndMove(const Controller& controller)
             nextLocation = m_location.up();
             if (!canMoveVertical(controller, nextLocation)) continue;
             break;
-        case Keys::SPECIAL_KEY:
+        case SpecialKeys::SPACE_BAR:
             break;
         default:
-            continue;
+            continue; // Invalid key, wait for next input
         }
 
         setLocation(nextLocation);
-        break;
+        break; // Move successful
     }
 }
 
 bool Player::canMoveHorizontal(const Controller& controller, const Location& location) const
 {
-    if (!controller.validLocationInBoard(location)) 
-        return false;
+    if (!controller.validLocationInBoard(location)) return false;
 
     Location below = location.down();
     if (controller.validLocationInBoard(below))
@@ -87,6 +84,7 @@ bool Player::canMoveHorizontal(const Controller& controller, const Location& loc
         char cellBelow = controller.getCellAtLocation(below);
         char currentCell = controller.getCellAtLocation(location);
 
+        // Cannot fall through floor, can move if on ladder or supported by floor/ladder
         if (((cellBelow == FLOOR || cellBelow == LADDER) && currentCell != FLOOR) || currentCell == LADDER)
             return true;
     }

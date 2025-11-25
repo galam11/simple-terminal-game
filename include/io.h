@@ -14,6 +14,7 @@ constexpr int UP = 72;
 constexpr int DOWN = 80;
 constexpr int LEFT = 75;
 constexpr int RIGHT = 77;
+constexpr int SPACE_BAR = 32;
 }
 
 namespace Screen

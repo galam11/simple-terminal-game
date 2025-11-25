@@ -72,7 +72,6 @@ void Controller::loadNextLevel()
 void Controller::setEntitiesStartingLocation()
 {
     m_player.setLocation(m_board.getPlayerStartLocation());
-
     for (int i = 0; i < (int)m_enemyList.size(); i++)
     {
         m_enemyList[i].setLocation(m_board.getEnemyStartLocation(i));
